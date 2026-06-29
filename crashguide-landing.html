@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrashGuide · Unfall? Richtig entscheiden.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #12141A;
+    --surface:     #1A1D26;
+    --surface2:    #20242F;
+    --blue:        #0EA5E9;
+    --blue-dim:    #0369A1;
+    --blue-glow:   rgba(14,165,233,0.10);
+    --blue-border: rgba(14,165,233,0.22);
+    --red:         #f87171;
+    --red-glow:    rgba(248,113,113,0.10);
+    --red-border:  rgba(248,113,113,0.25);
+    --green:       #4ade80;
+    --amber:       #fbbf24;
+    --text:        #F8FAFC;
+    --text-muted:  #8896A8;
+    --border:      rgba(255,255,255,0.07);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(18,20,26,0.96);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+  }
+
+  .nav-logo-mark {
+    width: 30px; height: 30px;
+    background: var(--red);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .nav-logo-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .nav-logo-text span { color: var(--red); font-weight: 400; }
+
+  .nav-cta {
+    background: var(--red);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    padding: 4.5rem 2rem 3.5rem;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    background: var(--red-glow);
+    border: 1px solid var(--red-border);
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 .accent { color: var(--red); }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .hero-cta-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .hero-cta-note span { color: var(--green); font-weight: 600; }
+
+  /* URGENCY BAR */
+  .urgency-bar {
+    background: rgba(248,113,113,0.08);
+    border-top: 1px solid var(--red-border);
+    border-bottom: 1px solid var(--red-border);
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .urgency-bar strong { color: var(--red); }
+
+  /* TRUST BAR */
+  .trust-bar {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    background: var(--surface);
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* FUNNELS */
+  .section {
+    padding: 4rem 2rem;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+
+  .section h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .funnel-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .funnel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+
+  .funnel-card:hover {
+    border-color: rgba(248,113,113,0.4);
+    transform: translateY(-2px);
+  }
+
+  .funnel-card.featured {
+    border-color: var(--red-border);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(248,113,113,0.05) 100%);
+  }
+
+  .funnel-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+
+  .funnel-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.01em;
+  }
+
+  .funnel-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+
+  .funnel-price {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .funnel-price strong { color: var(--text); font-weight: 700; }
+  .funnel-arrow { color: var(--red); }
+
+  /* WHAT'S INCLUDED */
+  .includes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .include-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+
+  .include-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+  .include-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  .include-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* FAQ */
+  .faq { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+
+  .faq-q {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .faq-a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 4rem 2rem;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .cta-section h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-section p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-brand { font-size: 0.78rem; color: var(--text-muted); }
+  .footer-brand span { color: var(--red); }
+
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--text); }
+
+  @media (max-width: 560px) {
+    .funnel-cards { grid-template-columns: 1fr; }
+    .trust-bar { gap: 1.25rem; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">🚨</div>
+    <span class="nav-logo-text">Crash<span>Guide</span></span>
+  </a>
+  <a href="index.html" class="nav-cta">Jetzt starten →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🚨 KI-Unfallhilfe</div>
+  <h1>Unfall gehabt?<br><span class="accent">Richtig entscheiden.</span></h1>
+  <p class="hero-sub">
+    KI analysiert deinen Schaden, schätzt die Kosten — und berechnet was der Unfall dich bei der Versicherung kostet. Bevor du mit der Versicherung sprichst.
+  </p>
+  <div class="hero-cta-group">
+    <a href="index.html" class="btn-primary">Jetzt Schaden einschätzen →</a>
+    <div class="hero-cta-note"><span>✓ Ergebnis in 60 Sekunden</span> · Ab € 6,99 · Kein Account</div>
+  </div>
+</section>
+
+<!-- URGENCY -->
+<div class="urgency-bar">
+  ⚠️ <strong>Wichtig:</strong> Die ersten Stunden nach einem Unfall sind entscheidend. Fotos sichern, Schaden dokumentieren — bevor du mit der Versicherung sprichst.
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">⚡ Ergebnis in 60 Sek.</div>
+  <div class="trust-item">🤖 KI-Schadensanalyse</div>
+  <div class="trust-item">📊 SF-Klassen-Rechner</div>
+  <div class="trust-item">📄 Musterbrief inklusive</div>
+  <div class="trust-item">🇩🇪 Made in Germany</div>
+</div>
+
+<!-- FUNNELS -->
+<section class="section">
+  <div class="section-label">Wähle deinen Fall</div>
+  <h2>Was ist passiert?</h2>
+  <div class="funnel-cards">
+
+    <a href="index.html" class="funnel-card">
+      <div class="funnel-icon">🚗</div>
+      <div class="funnel-name">Kleiner Schaden</div>
+      <div class="funnel-desc">Delle, Kratzer, Parkunfall. KI schätzt den Reparaturaufwand und ob sich eine Meldung bei der Versicherung lohnt.</div>
+      <div class="funnel-price">
+        <span>Vollanalyse <strong>€ 6,99</strong></span>
+        <span class="funnel-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="index.html" class="funnel-card featured">
+      <div class="funnel-icon">💥</div>
+      <div class="funnel-name">Unfall-Bundle</div>
+      <div class="funnel-desc">Kollision, Auffahrunfall, Fremdschaden. Inkl. SF-Klassen-Berechnung und Musterbrief an die Versicherung.</div>
+      <div class="funnel-price">
+        <span>Bundle <strong>€ 6,99</strong></span>
+        <span class="funnel-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- WHAT'S INCLUDED -->
+<section class="section" style="padding-top:0;">
+  <div class="section-label">Was du bekommst</div>
+  <h2>Alles was du<br>jetzt brauchst</h2>
+  <div class="includes-list">
+    <div class="include-item">
+      <div class="include-icon">📸</div>
+      <div>
+        <div class="include-title">KI-Schadensanalyse</div>
+        <div class="include-desc">Fotos hochladen — KI erkennt Art und Ausmaß des Schadens und schätzt die Reparaturkosten.</div>
+      </div>
+    </div>
+    <div class="include-item">
+      <div class="include-icon">📊</div>
+      <div>
+        <div class="include-title">SF-Klassen-Rechner</div>
+        <div class="include-desc">Wie viel kostet dich der Unfall bei der Versicherung? Der Rechner zeigt die Hochstufung für alle großen Anbieter.</div>
+      </div>
+    </div>
+    <div class="include-item">
+      <div class="include-icon">📝</div>
+      <div>
+        <div class="include-title">Musterbrief</div>
+        <div class="include-desc">Professionelles Anschreiben an die Versicherung — direkt ausfüllen und absenden.</div>
+      </div>
+    </div>
+    <div class="include-item">
+      <div class="include-icon">⚖️</div>
+      <div>
+        <div class="include-title">Lohnt sich die Meldung?</div>
+        <div class="include-desc">Manchmal ist Selbstzahlen günstiger als eine Versicherungsmeldung. CrashGuide rechnet beides durch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0;">
+  <div class="section-label">Häufige Fragen</div>
+  <h2>Alles was du<br>wissen musst</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">Wie schnell bekomme ich das Ergebnis?</div>
+      <div class="faq-a">In der Regel innerhalb von 60 Sekunden. Die KI analysiert deine Fotos sofort nach dem Upload.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Für welche Versicherungen gilt der SF-Rechner?</div>
+      <div class="faq-a">HUK-COBURG, Allianz, VHV und einen Branchendurchschnitt. Für andere Anbieter wird der Durchschnitt verwendet.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Ist die Kosteneinschätzung verbindlich?</div>
+      <div class="faq-a">Nein — alle Schätzungen sind unverbindliche KI-Einschätzungen. Für eine verbindliche Kalkulation empfehlen wir einen Kostenvoranschlag beim Karosseriebetrieb.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Was passiert mit meinen Fotos?</div>
+      <div class="faq-a">Die Fotos werden nur für die Analyse verwendet. Sie werden nicht dauerhaft gespeichert.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Jetzt Klarheit bekommen.</h2>
+  <p>Schaden einschätzen, SF-Klassen berechnen, Musterbrief erstellen — in 60 Sekunden.</p>
+  <a href="index.html" class="btn-primary">Jetzt starten → </a>
+  <div style="margin-top:1rem;font-size:0.75rem;color:var(--text-muted);">
+    Ein Tool von <a href="https://mein-auto-assistent.de" style="color:var(--blue);text-decoration:none;">Mein-Auto-Assistent.de</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">© 2026 <span>CrashGuide</span> · Mein-Auto-Assistent.de</div>
+  <div class="footer-links">
+    <a href="#">Impressum</a>
+    <a href="#">Datenschutz</a>
+    <a href="https://mein-auto-assistent.de">← Zum Hub</a>
+  </div>
+</footer>
+
+</body>
+</html>
