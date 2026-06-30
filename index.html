@@ -13,9 +13,10 @@
     --surface:     #1A1D26;
     --blue:        #0EA5E9;
     --red:         #f87171;
-    --red-dim:     #dc2626;
-    --red-glow:    rgba(248,113,113,0.10);
-    --red-border:  rgba(248,113,113,0.25);
+    --blue:        #0EA5E9;
+    --blue-dim:    #0369A1;
+    --blue-glow:   rgba(14,165,233,0.10);
+    --blue-border: rgba(14,165,233,0.22);
     --green:       #4ade80;
     --amber:       #fbbf24;
     --text:        #F8FAFC;
@@ -30,21 +31,21 @@
 
   .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem 0.75rem; flex-shrink: 0; }
   .logo { display: flex; align-items: center; gap: 0.5rem; }
-  .logo-mark { width: 26px; height: 26px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .logo-mark { width: 26px; height: 26px; background: var(--blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
   .logo-text { font-size: 0.85rem; font-weight: 700; }
-  .logo-text span { color: var(--red); font-weight: 400; }
+  .logo-text span { color: var(--blue); font-weight: 400; }
 
   .dots { display: flex; gap: 6px; align-items: center; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
-  .dot.active { background: var(--red); width: 18px; border-radius: 3px; }
+  .dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
 
   .content { flex: 1; padding: 1.5rem 1.5rem 0; display: flex; flex-direction: column; overflow: hidden; }
 
   .badge {
     display: inline-flex; align-items: center; gap: 0.35rem;
     font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--red);
-    background: var(--red-glow); border: 1px solid var(--red-border);
+    text-transform: uppercase; color: var(--blue);
+    background: var(--blue-glow); border: 1px solid var(--blue-border);
     padding: 0.2rem 0.6rem; border-radius: 100px;
     margin-bottom: 1rem; align-self: flex-start;
   }
@@ -53,7 +54,7 @@
   .badge.blue  { color: var(--blue);  background: rgba(14,165,233,0.1);  border-color: rgba(14,165,233,0.25); }
 
   h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 0.6rem; }
-  h1 .accent { color: var(--red); }
+  h1 .accent { color: var(--blue); }
   h1 .amber  { color: var(--amber); }
   h1 .green  { color: var(--green); }
 
@@ -70,7 +71,7 @@
   .card-text  { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
   .card-text strong { color: var(--text); }
 
-  .math-box { background: var(--surface); border: 1px solid var(--red-border); border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.75rem; }
+  .math-box { background: var(--surface); border: 1px solid var(--blue-border); border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.75rem; }
   .math-row { display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0; font-size: 0.82rem; border-bottom: 1px solid var(--border); }
   .math-row:last-child { border-bottom: none; }
   .math-row.total { font-weight: 700; font-size: 0.9rem; margin-top: 0.2rem; }
@@ -81,19 +82,20 @@
   .vs-divider { text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin: 0.5rem 0; }
 
   .bottom-bar { padding: 1rem 1.5rem 1.5rem; flex-shrink: 0; }
-  .btn-next { width: 100%; padding: 0.9rem; background: var(--red); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: opacity 0.2s; }
+  .btn-next { width: 100%; padding: 0.9rem; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .btn-next:hover { background: var(--blue-dim); }
   .btn-next:hover { opacity: 0.88; }
   .btn-next.green-btn { background: #16a34a; }
   .skip-link { display: block; text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.6rem; cursor: pointer; text-decoration: none; }
 
   .choice-cards { display: flex; flex-direction: column; gap: 0.75rem; }
   .choice-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; text-decoration: none; color: inherit; display: flex; align-items: center; justify-content: space-between; transition: border-color 0.2s; }
-  .choice-card.primary { border-color: var(--red-border); background: rgba(248,113,113,0.05); }
+  .choice-card.primary { border-color: var(--blue-border); background: rgba(14,165,233,0.05); }
   .choice-card-left { display: flex; align-items: center; gap: 0.75rem; }
   .choice-icon { font-size: 1.5rem; }
   .choice-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.15rem; }
   .choice-sub   { font-size: 0.75rem; color: var(--text-muted); }
-  .choice-arrow { color: var(--red); font-size: 1rem; }
+  .choice-arrow { color: var(--blue); font-size: 1rem; }
 
   .note { font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; line-height: 1.5; }
   .note span { color: var(--green); font-weight: 600; }
@@ -223,41 +225,49 @@
     </div>
 
     <div class="content">
-      <div class="badge amber">Die Rechnung</div>
-      <h1>€ 6,99 oder<br><span class="amber">hunderte verschenkt?</span></h1>
-      <p class="lead">Was kostet eine falsche Entscheidung nach dem Unfall wirklich?</p>
+      <div class="badge amber">Echter Fall</div>
+      <h1>"Ich dachte,<br><span class="amber">ich hätte gespart."</span></h1>
+      <p class="lead">So sieht eine typische Fehlentscheidung nach einem Unfall aus — in echten Zahlen.</p>
+
+      <div class="card red-border" style="margin-bottom:0.75rem;">
+        <div class="card-icon">🚗</div>
+        <div>
+          <div class="card-title">Der Fall: Auffahrunfall, Schaden 1.000 €</div>
+          <div class="card-text">Schnell entschieden: <strong>Versicherung zahlt</strong> — Problem gelöst, dachte er.</div>
+        </div>
+      </div>
 
       <div class="math-box">
         <div class="math-row">
-          <span class="math-label">🔴 Unnötige SF-Hochstufung</span>
-          <span class="math-val red">200–600 €/Jahr</span>
+          <span class="math-label">Schaden über Versicherung</span>
+          <span class="math-val red">1.000 €</span>
         </div>
         <div class="math-row">
-          <span class="math-label">🔴 Über 3-5 Jahre</span>
-          <span class="math-val red">1.000–3.000 €</span>
+          <span class="math-label">SF-Hochstufung um 3 Klassen</span>
+          <span class="math-val red">+ 38 €/Monat</span>
         </div>
         <div class="math-row">
-          <span class="math-label">🔴 Überteuerte Werkstatt</span>
-          <span class="math-val red">100–400 €</span>
+          <span class="math-label">Über die nächsten 4 Jahre</span>
+          <span class="math-val red">1.824 €</span>
         </div>
         <div class="math-row total">
-          <span class="math-label">Typischer Verlust</span>
-          <span class="math-val red">1.000 €+</span>
+          <span class="math-label">Tatsächlich gezahlt</span>
+          <span class="math-val red">2.824 €</span>
         </div>
       </div>
 
-      <div class="vs-divider">vs.</div>
-
-      <div class="math-box" style="border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);">
-        <div class="math-row total">
-          <span class="math-label">🟢 CrashGuide Vollanalyse</span>
-          <span class="math-val green">6,99 €</span>
+      <div class="card amber-border">
+        <div class="card-icon">💡</div>
+        <div>
+          <div class="card-title">Die bittere Wahrheit</div>
+          <div class="card-text">Bei Selbstzahlung wären es <strong>1.000 € einmalig</strong> gewesen. So zahlte er <strong>1.824 € extra</strong> — fast das Doppelte, in Raten, über Jahre verteilt.</div>
         </div>
       </div>
+      <p style="font-size:0.68rem;color:var(--text-muted);margin-top:0.5rem;">* Beispielrechnung auf Basis durchschnittlicher SF-Rückstufungstabellen. Individuelle Werte hängen von Versicherer und Vertrag ab.</p>
     </div>
 
     <div class="bottom-bar">
-      <button class="btn-next" onclick="goTo(3)">Weiter — Wie funktioniert's? →</button>
+      <button class="btn-next" onclick="goTo(3)">Auf Nummer sicher gehen →</button>
       <span class="skip-link" onclick="goTo(1)">← Zurück</span>
     </div>
   </div>
@@ -360,7 +370,7 @@
 
       <div class="note">
         <span>✓ Keine Anmeldung</span> · Kein Abo · Einmalig bezahlen<br>
-        Ein Tool von <a href="https://mein-auto-assistent.de" style="color:var(--red);text-decoration:none;">Mein-Auto-Assistent.de</a>
+        Ein Tool von <a href="https://mein-auto-assistent.de" style="color:var(--blue);text-decoration:none;">Mein-Auto-Assistent.de</a>
       </div>
     </div>
 
