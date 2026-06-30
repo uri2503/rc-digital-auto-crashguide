@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CrashGuide · Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #12141A; --surface: #1A1D26;
+    --red: #f87171; --red-dim: #dc2626;
+    --red-glow: rgba(248,113,113,0.10);
+    --red-border: rgba(248,113,113,0.25);
+    --green: #4ade80; --amber: #fbbf24; --blue: #0EA5E9;
+    --text: #F8FAFC; --text-muted: #8896A8;
+    --border: rgba(255,255,255,0.08);
+  }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  .slider { display: flex; width: 400%; height: 100%; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .screen { width: 25%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem 0.75rem; flex-shrink: 0; }
+  .logo { display: flex; align-items: center; gap: 0.5rem; }
+  .logo-mark { width: 26px; height: 26px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .logo-text { font-size: 0.85rem; font-weight: 700; }
+  .logo-text span { color: var(--red); font-weight: 400; }
+  .dots { display: flex; gap: 6px; align-items: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+  .dot.active { background: var(--red); width: 18px; border-radius: 3px; }
+
+  .content { flex: 1; padding: 1rem 1.5rem 0; display: flex; flex-direction: column; overflow: hidden; gap: 0.6rem; }
+
+  .case-intro { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem; }
+  .case-num { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+  .severity-badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; font-weight: 700; padding: 0.22rem 0.65rem; border-radius: 100px; }
+  .severity-badge.klein  { background: rgba(74,222,128,0.12); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+  .severity-badge.mittel { background: rgba(251,191,36,0.12); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+  .severity-badge.gross  { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid var(--red-border); }
+
+  .case-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; }
+  .case-sub   { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+
+  .cost-box { background: var(--surface); border: 1px solid var(--red-border); border-radius: 12px; padding: 1rem 1.1rem; text-align: center; }
+  .cost-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .cost-value { font-size: 1.5rem; font-weight: 800; color: var(--red); letter-spacing: -0.02em; }
+  .cost-note { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+  .results { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; overflow: hidden; }
+  .result-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 0.9rem; display: flex; align-items: flex-start; gap: 0.65rem; }
+  .result-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 0.35rem; }
+  .result-dot.gruen { background: var(--green); }
+  .result-dot.gelb  { background: var(--amber); }
+  .result-dot.rot   { background: var(--red); }
+  .result-area { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.15rem; }
+  .result-text { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
+
+  .fazit { border-radius: 10px; padding: 0.85rem 1rem; flex-shrink: 0; }
+  .fazit.gruen { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); }
+  .fazit.gelb  { background: rgba(251,191,36,0.07);  border: 1px solid rgba(251,191,36,0.2); }
+  .fazit.rot   { background: rgba(248,113,113,0.07); border: 1px solid var(--red-border); }
+  .fazit-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.25rem; }
+  .fazit.gruen .fazit-label { color: var(--green); }
+  .fazit.gelb  .fazit-label { color: var(--amber); }
+  .fazit.rot   .fazit-label { color: var(--red); }
+  .fazit-text { font-size: 0.8rem; color: var(--text); line-height: 1.5; }
+
+  .bottom-bar { padding: 0.75rem 1.5rem 1.25rem; flex-shrink: 0; }
+  .btn-next { width: 100%; padding: 0.85rem; background: var(--red); color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; }
+  .btn-next.green-btn { background: #16a34a; }
+  .skip-link { display: block; text-align: center; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem; cursor: pointer; }
+
+  .choice-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+  .choice-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; text-decoration: none; color: inherit; display: flex; align-items: center; justify-content: space-between; }
+  .choice-card.primary { border-color: var(--red-border); background: rgba(248,113,113,0.05); }
+  .choice-left { display: flex; align-items: center; gap: 0.75rem; }
+  .choice-icon { font-size: 1.4rem; }
+  .choice-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.1rem; }
+  .choice-sub   { font-size: 0.72rem; color: var(--text-muted); }
+  .choice-arrow { color: var(--red); }
+
+  .cta-note { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; line-height: 1.5; }
+  .cta-note span { color: var(--green); font-weight: 600; }
+  .cta-header { margin-bottom: 0.5rem; }
+  .cta-header h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+  .cta-header p { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem; }
+</style>
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+  <!-- ══════ SCREEN 1: Kleiner Schaden ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🚨</div><div class="logo-text">Crash<span>Guide</span></div></div>
+      <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="case-intro">
+        <span class="case-num">Beispiel 1 von 3</span>
+        <span class="severity-badge klein">🟢 Bagatellschaden</span>
+      </div>
+      <div class="case-title">Kratzer Stoßstange</div>
+      <div class="case-sub">Parkrempler · VW Polo · 2 Fotos · Analyse in 14 Sek.</div>
+
+      <div class="cost-box">
+        <div class="cost-label">Geschätzte Reparaturkosten</div>
+        <div class="cost-value">180 – 280 €</div>
+        <div class="cost-note">Lackausbesserung, kein struktureller Schaden</div>
+      </div>
+
+      <div class="results">
+        <div class="result-item">
+          <div class="result-dot gruen"></div>
+          <div><div class="result-area">Schadensart</div><div class="result-text">Oberflächlicher Lackkratzer, ca. 15 cm. Keine Dellen, kein Strukturschaden erkennbar.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot gruen"></div>
+          <div><div class="result-area">SF-Klassen-Check</div><div class="result-text">Bei Selbstzahlung keine Auswirkung auf deine Schadenfreiheitsklasse.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot gelb"></div>
+          <div><div class="result-area">Meldung lohnt sich?</div><div class="result-text">Bei diesem Schadensbild meist NICHT — die Hochstufung würde mehr kosten als die Reparatur.</div></div>
+        </div>
+      </div>
+
+      <div class="fazit gruen">
+        <div class="fazit-label">CrashGuide-Empfehlung</div>
+        <div class="fazit-text">Selbst zahlen lohnt sich hier fast immer. <strong>Nicht melden</strong> — spart dir Jahre höhere Beiträge.</div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(1)">Nächstes Beispiel →</button>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 2: Mittlerer Schaden ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🚨</div><div class="logo-text">Crash<span>Guide</span></div></div>
+      <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="case-intro">
+        <span class="case-num">Beispiel 2 von 3</span>
+        <span class="severity-badge mittel">🟡 Normaler Schaden</span>
+      </div>
+      <div class="case-title">Delle Motorhaube</div>
+      <div class="case-sub">Hagelschaden · Audi A3 · 3 Fotos · Analyse in 22 Sek.</div>
+
+      <div class="cost-box">
+        <div class="cost-label">Geschätzte Reparaturkosten</div>
+        <div class="cost-value">850 – 1.200 €</div>
+        <div class="cost-note">Ausbeulen + Neulackierung Motorhaube</div>
+      </div>
+
+      <div class="results">
+        <div class="result-item">
+          <div class="result-dot gelb"></div>
+          <div><div class="result-area">Schadensart</div><div class="result-text">Mehrere Dellen durch Hagel, Lack stellenweise beschädigt. Reparaturfähig ohne Teiletausch.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot blau"></div>
+          <div><div class="result-area">SF-Klassen-Rechner</div><div class="result-text">Bei Meldung: Hochstufung um 2 Klassen, ca. +280 €/Jahr für 4 Jahre = 1.120 € Mehrkosten.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot gruen"></div>
+          <div><div class="result-area">Teilkasko-Check</div><div class="result-text">Hagelschäden laufen oft über die Teilkasko ohne SF-Klassen-Einfluss — prüfe deine Police!</div></div>
+        </div>
+      </div>
+
+      <div class="fazit gelb">
+        <div class="fazit-label">CrashGuide-Empfehlung</div>
+        <div class="fazit-text">Prüfe ob <strong>Teilkasko greift</strong> — dann melden ohne Nachteil. Sonst: Kostenvoranschlag einholen und abwägen.</div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(2)">Nächstes Beispiel →</button>
+      <span class="skip-link" onclick="goTo(0)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 3: Großer Schaden ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🚨</div><div class="logo-text">Crash<span>Guide</span></div></div>
+      <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="case-intro">
+        <span class="case-num">Beispiel 3 von 3</span>
+        <span class="severity-badge gross">🔴 Erheblicher Schaden</span>
+      </div>
+      <div class="case-title">Frontschaden</div>
+      <div class="case-sub">Auffahrunfall · Opel Astra · 5 Fotos · Analyse in 28 Sek.</div>
+
+      <div class="cost-box">
+        <div class="cost-label">Geschätzte Reparaturkosten</div>
+        <div class="cost-value">3.200 – 4.800 €</div>
+        <div class="cost-note">Stoßfänger, Kühlergrill, Scheinwerfer betroffen</div>
+      </div>
+
+      <div class="results">
+        <div class="result-item">
+          <div class="result-dot rot"></div>
+          <div><div class="result-area">Schadensart</div><div class="result-text">Erheblicher Frontschaden mit Teiletausch nötig. Möglicherweise Schaden am Kühlsystem — Werkstatt-Check empfohlen.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot blau"></div>
+          <div><div class="result-area">Unfallgegner</div><div class="result-text">Bei Auffahrunfall: Gegner ist in der Regel haftpflichtig. Schaden geht über die Versicherung des Unfallgegners.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot gelb"></div>
+          <div><div class="result-area">Dokumentation</div><div class="result-text">Fotos, Unfallbericht und Zeugenkontakte sichern — wichtig für die Schadensregulierung.</div></div>
+        </div>
+      </div>
+
+      <div class="fazit rot">
+        <div class="fazit-label">CrashGuide-Empfehlung</div>
+        <div class="fazit-text">Bei Fremdverschulden: <strong>Gegnerische Versicherung kontaktieren</strong>, nicht deine eigene. Musterbrief jetzt erstellen.</div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(3)">Jetzt meine Analyse starten →</button>
+      <span class="skip-link" onclick="goTo(1)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 4: CTA ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🚨</div><div class="logo-text">Crash<span>Guide</span></div></div>
+      <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="cta-header">
+        <h2>Du hast gesehen<br>wie es funktioniert.</h2>
+        <p>Bereit für deine eigene Schadensanalyse?</p>
+      </div>
+
+      <div class="choice-cards">
+        <a href="check.html" class="choice-card primary">
+          <div class="choice-left">
+            <div class="choice-icon">🚨</div>
+            <div>
+              <div class="choice-title">Meine Analyse starten</div>
+              <div class="choice-sub">Vollanalyse € 6,99</div>
+            </div>
+          </div>
+          <div class="choice-arrow">→</div>
+        </a>
+        <a href="index.html" class="choice-card">
+          <div class="choice-left">
+            <div class="choice-icon">←</div>
+            <div>
+              <div class="choice-title">Zur Übersicht</div>
+              <div class="choice-sub">Nochmal alles nachlesen</div>
+            </div>
+          </div>
+          <div class="choice-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="cta-note">
+        <span>✓ Keine Anmeldung</span> · Kein Abo · Einmalig bezahlen<br>
+        Ein Tool von <a href="https://mein-auto-assistent.de" style="color:var(--red);text-decoration:none;">Mein-Auto-Assistent.de</a>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next green-btn" onclick="window.location.href='check.html'">Für € 6,99 zur Analyse →</button>
+      <span class="skip-link" onclick="goTo(2)">← Zurück</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var current = 0;
+function goTo(n) {
+  current = n;
+  document.getElementById('slider').style.transform = 'translateX(-' + (n * 25) + '%)';
+  var allDots = document.querySelectorAll('.dot');
+  for (var i = 0; i < allDots.length; i++) {
+    var dotIdx = i % 4;
+    allDots[i].className = 'dot' + (dotIdx === current ? ' active' : '');
+  }
+}
+var startX = 0;
+document.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; });
+document.addEventListener('touchend', function(e) {
+  var diff = startX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0 && current < 3) goTo(current + 1);
+    if (diff < 0 && current > 0) goTo(current - 1);
+  }
+});
+</script>
+
+</body>
+</html>
