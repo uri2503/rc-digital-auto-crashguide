@@ -1,8 +1,18 @@
+<!--
+  ⚠️ STILLGELEGT — nicht Teil des aktiven Kauf-Flows (Stand: Juli 2026).
+  Diese Seite hat keinen Bezug zu den Formulardaten/Fotos aus crash-tool.html
+  (kein localStorage-Snapshot) und wird von keiner Landingpage mehr verlinkt.
+  Der aktive Flow läuft komplett über crash-tool.html (payWall() dort ruft
+  crashguide-checkout direkt auf, inkl. Formulardaten-Snapshot).
+  Absichtlich nicht gelöscht, falls sie später als eigenständiger
+  Einstiegspunkt reaktiviert werden soll — dafür bräuchte sie dann aber
+  selbst einen Fotoupload + Formular wie crash-tool.html.
+-->
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CrashGuide · Freischalten</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -32,13 +42,7 @@
   .includes { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; text-align: left; }
   .include-item { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
   .include-item .check { color: var(--green); flex-shrink: 0; }
-  input[type="email"] { width: 100%; max-width: 340px; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 0.9rem; font-family: 'Inter', sans-serif; margin-bottom: 0.5rem; outline: none; display: block; }
-  input[type="email"]:focus { border-color: var(--red); }
-  .err { font-size: 0.75rem; color: var(--red); min-height: 1.2rem; margin-bottom: 0.5rem; text-align: left; width: 100%; max-width: 340px; }
-  .btn-pay { width: 100%; max-width: 340px; padding: 0.9rem; background: var(--red); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: opacity 0.2s; }
-  .btn-pay:hover { opacity: 0.88; }
-  .btn-pay:disabled { opacity: 0.6; cursor: default; }
-  .note { font-size: 0.7rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.6; max-width: 340px; }
+  .note { font-size: 0.7rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.6; }
   .note a { color: var(--red); text-decoration: none; }
 </style>
 </head>
@@ -66,54 +70,15 @@
   <div class="include-item"><span class="check">✓</span> Musterbrief an die Versicherung</div>
 </div>
 
-<input type="email" id="emailInput" placeholder="deine@email.de" onkeydown="if(event.key==='Enter') startCheckout()">
-<div class="err" id="errMsg"></div>
-<button class="btn-pay" id="payBtn" onclick="startCheckout()">Jetzt für € 6,99 freischalten →</button>
+<p class="sub" style="color:var(--red)">Diese Seite ist derzeit nicht aktiv. Bitte nutze das Tool direkt:</p>
+<a href="crash-tool.html" style="display:block;box-sizing:border-box;width:100%;max-width:340px;padding:0.9rem;background:var(--red);color:#fff;border-radius:10px;font-size:0.95rem;font-weight:700;text-decoration:none;line-height:1.4">Zum CrashGuide-Tool →</a>
 
 <div class="note">
   🔒 Sichere Zahlung via Stripe<br>
-  Mit der Zahlung stimmst du unserer <a href="datenschutz.html">Datenschutzerklärung</a> zu.<br>
-  <a href="demo.html">← Demo nochmal ansehen</a> ·
-  <a href="impressum.html">Impressum</a>
+  Mit der Zahlung stimmst du unserer <a href="crash-datenschutz.html">Datenschutzerklärung</a> zu.<br>
+  <a href="crash-demo.html">← Demo nochmal ansehen</a> ·
+  <a href="crash-impressum.html">Impressum</a>
 </div>
-
-<script>
-function startCheckout() {
-  var email = document.getElementById('emailInput').value.trim();
-  var btn = document.getElementById('payBtn');
-  var err = document.getElementById('errMsg');
-  err.textContent = '';
-
-  if (!email || email.indexOf('@') === -1) {
-    err.textContent = 'Bitte eine gültige E-Mail eingeben.';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Weiterleitung zu Stripe...';
-
-  fetch('https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/crashguide-checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      err.textContent = 'Fehler: ' + (data.error || 'Unbekannt');
-      btn.disabled = false;
-      btn.textContent = 'Jetzt für € 6,99 freischalten →';
-    }
-  })
-  .catch(function() {
-    err.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
-    btn.disabled = false;
-    btn.textContent = 'Jetzt für € 6,99 freischalten →';
-  });
-}
-</script>
 
 </body>
 </html>

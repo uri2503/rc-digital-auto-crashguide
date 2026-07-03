@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CrashGuide · Mein Auto-Assistent</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -286,7 +286,7 @@ section{padding:48px 0}
       <ol>
         <li>Schau dir an, wie detailliert wir 3 typische Schäden einschätzen — kostet nichts</li>
         <li>Foto deines eigenen Schadens hochladen und Versicherungsdaten ergänzen</li>
-        <li>Deine individuelle KI-Schadensschätzung freischalten (3,99 €) oder zusammen mit der SF-Rückstufung als Bundle (4,99 €)</li>
+        <li>Deine individuelle KI-Schadensschätzung freischalten (6,99 €) oder zusammen mit der SF-Rückstufung als Bundle (9,99 €)</li>
         <li>Ergebnis ansehen: Selbstzahlung oder Versicherung — mit echten Zahlen verglichen</li>
       </ol>
     </div>
@@ -342,7 +342,7 @@ section{padding:48px 0}
               <div class="reality-text" id="realityText"></div>
             </div>
             <div class="reveal-pitch">
-              Genau diese Tiefe an Information bekommst du für <strong>deinen eigenen Schaden für 3,99 €</strong>. Ein Lackierer verlangt für einen Kostenvoranschlag oft 30–150 € — die du bei Nichtbeauftragung meist nicht zurückbekommst.
+              Genau diese Tiefe an Information bekommst du für <strong>deinen eigenen Schaden für 6,99 €</strong>. Ein Lackierer verlangt für einen Kostenvoranschlag oft 30–150 € — die du bei Nichtbeauftragung meist nicht zurückbekommst.
             </div>
           </div>
 
@@ -360,7 +360,7 @@ section{padding:48px 0}
             <strong>Tatsächliche Rückstufungs-Berechnung</strong>
             <span id="revealRSText"></span>
             <div class="bundle-hint">
-              <strong>Beide Antworten für deinen Fall zusammen: 4,99 €</strong> statt 7,98 € einzeln.
+              <strong>Beide Antworten für deinen Fall zusammen: 9,99 €</strong> statt 13,98 € einzeln.
             </div>
           </div>
 
@@ -471,7 +471,7 @@ section{padding:48px 0}
       <div id="volumenCta" style="display:none;margin-top:16px">
         <div class="card">
           <div class="card-title">Schätzung freischalten</div>
-          <div class="card-hint">Einmalig 3,99 € — KI-Analyse deines Fotos (oder deines manuellen Betrags), keine weiteren Schritte nötig.</div>
+          <div class="card-hint">Einmalig 6,99 € — KI-Analyse deines Fotos (oder deines manuellen Betrags), keine weiteren Schritte nötig.</div>
           <div style="background:var(--green-dim);border:1px solid rgba(31,122,77,.25);border-radius:8px;padding:12px 14px;margin-bottom:16px">
             <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:6px">💶 Das kann sich auszahlen</div>
             <div style="font-size:12.5px;color:var(--grey-light);line-height:1.6">Werkstätten verlangen für einen Kostenvoranschlag oft 30–150 € — und ohne Referenzwert verhandelst du blind. Mit einer realistischen Zahl in der Hand vermeidest du, am Ende mehrere hundert Euro zu viel zu zahlen.</div>
@@ -480,7 +480,7 @@ section{padding:48px 0}
             <input type="checkbox" id="cgConsentVolumen" onchange="cgToggleConsent('volumen')" style="margin-top:3px;flex-shrink:0;width:18px;height:18px">
             <label for="cgConsentVolumen" style="font-size:11.5px;color:var(--grey);line-height:1.5;text-align:left">Ich stimme ausdrücklich zu, dass mit der Bereitstellung der digitalen Analyse vor Ablauf der Widerrufsfrist begonnen wird, und bestätige, dass ich dadurch mein Widerrufsrecht verliere (§&nbsp;356 Abs.&nbsp;5 BGB).</label>
           </div>
-          <button class="btn btn-primary btn-full" id="btnPayVolumen" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentVolumen===true && payWall('ks')">Schätzung freischalten · 3,99 €</button>
+          <button class="btn btn-primary btn-full" id="btnPayVolumen" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentVolumen===true && payWall('ks')">Schätzung freischalten · 6,99 €</button>
         </div>
       </div>
 
@@ -649,7 +649,7 @@ section{padding:48px 0}
 
         <div style="background:var(--green-dim);border:1px solid rgba(31,122,77,.25);border-radius:8px;padding:12px 14px;margin-top:18px">
           <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:6px">💶 Das kann sich auszahlen</div>
-          <div style="font-size:12.5px;color:var(--grey-light);line-height:1.6">Eine falsche Entscheidung — Versicherung melden statt selbst zahlen, oder umgekehrt — kann dich über die Rückstufung Hunderte Euro über mehrere Jahre kosten. Die 4,99 € zeigen dir schwarz auf weiß, welche Option für deinen Fall wirklich günstiger ist.</div>
+          <div style="font-size:12.5px;color:var(--grey-light);line-height:1.6">Eine falsche Entscheidung — Versicherung melden statt selbst zahlen, oder umgekehrt — kann dich über die Rückstufung Hunderte Euro über mehrere Jahre kosten. Die 9,99 € zeigen dir schwarz auf weiß, welche Option für deinen Fall wirklich günstiger ist.</div>
         </div>
 
         <div class="consent-box" style="text-align:left;display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
@@ -660,7 +660,7 @@ section{padding:48px 0}
 
       <div style="margin-top:16px;display:flex;justify-content:space-between">
         <button class="btn btn-ghost" onclick="goStep(2)">← Zurück</button>
-        <button class="btn btn-primary" id="btnPayBundle" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentBundle===true && payWall('bundle')">Ergebnis freischalten · 4,99 €</button>
+        <button class="btn btn-primary" id="btnPayBundle" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentBundle===true && payWall('bundle')">Ergebnis freischalten · 9,99 €</button>
       </div>
     </div>
 
@@ -750,14 +750,13 @@ const SUPA_ANON_KEY = 'sb_publishable_v4kXJa0y-2EHsCFPqBFHfg_QvzKLnt2';
 // ═══════════════════════════════════════════════
 //  KONFIGURATION — PAYWALL-FIRST BEZAHLMODELL
 // ═══════════════════════════════════════════════
-// ⚠️ TODO VOR GO-LIVE: Platzhalter durch echte Stripe-Payment-Links ersetzen.
-// WICHTIG: In Stripe muss unter "After payment" die Redirect-URL auf
-// genau diese Seite + "?paid=1" gesetzt werden, z.B.:
-// https://uri2503.github.io/auto_guide_crash/?paid=1
-// ⚠️ TODO VOR GO-LIVE: Das sind TEST-Mode-Links (buy.stripe.com/test_...). Vor echtem Launch
-// im Stripe Dashboard auf Live-Modus umschalten und die Live-Links hier eintragen.
-const STRIPE_KS_LINK = 'https://buy.stripe.com/test_aFaeVc6nicQuaj6gdXcwg01';     // 6,99 € — CrashGuide Vollanalyse
-const STRIPE_BUNDLE_LINK = 'https://buy.stripe.com/test_aFaaEW5je17M0Iw6Dncwg02'; // 6,99 € — CrashGuide Bundle
+// Checkout läuft über die Edge Function crashguide-checkout (erzeugt eine echte
+// Stripe-Checkout-Session). Die Rückkehr von Stripe geht über crash-success.html,
+// die die session_id serverseitig via crashguide-verify prüft und erst DANN
+// hierher mit ?session_id=... weiterleitet. Kein Vertrauen mehr auf einen reinen
+// ?paid=1 URL-Parameter.
+const CHECKOUT_URL = 'https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/crashguide-checkout';
+const VERIFY_URL = 'https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/crashguide-verify';
 const CG_PENDING_KEY = 'cg_pending_analysis';
 
 // ═══════════════════════════════════════════════
@@ -1257,8 +1256,9 @@ function resetApp() {
 // ═══════════════════════════════════════════════
 // Snapshot aller Formulardaten geht vor der Weiterleitung zu Stripe in
 // localStorage, da CrashGuide ohne Login/Backend läuft. Nach erfolgreicher
-// Zahlung (Rückkehr mit ?paid=1) wird wiederhergestellt, die KI läuft jetzt
-// erst (bezahlt!), danach das Ergebnis berechnet/angezeigt.
+// Zahlung (Rückkehr mit ?session_id=..., serverseitig via crashguide-verify
+// geprüft) wird wiederhergestellt, die KI läuft jetzt erst (bezahlt!),
+// danach das Ergebnis berechnet/angezeigt.
 window.cgConsentVolumen = false;
 window.cgConsentBundle = false;
 
@@ -1274,7 +1274,7 @@ function cgToggleConsent(kind) {
 
 function fieldVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
 
-function payWall(product) {
+async function payWall(product) {
   if (!photoBase64Arr.length && !fieldVal('schadenBetrag')) {
     toast('Bitte Foto(s) hochladen oder Betrag eingeben'); return;
   }
@@ -1298,19 +1298,64 @@ function payWall(product) {
     ts: Date.now()
   };
   localStorage.setItem(CG_PENDING_KEY, JSON.stringify(snapshot));
-  window.location.href = product === 'bundle' ? STRIPE_BUNDLE_LINK : STRIPE_KS_LINK;
+
+  const btn = document.getElementById(product === 'bundle' ? 'btnPayBundle' : 'btnPayVolumen');
+  if (btn) { btn.style.pointerEvents = 'none'; btn.style.opacity = '.6'; }
+  toast('Weiterleitung zu Stripe …', true);
+
+  try {
+    const res = await fetch(CHECKOUT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: product })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      toast('Fehler beim Start der Zahlung: ' + (data.error || 'unbekannt'));
+      if (btn) { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
+    }
+  } catch (e) {
+    toast('Verbindungsfehler — bitte erneut versuchen.');
+    if (btn) { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
+  }
 }
 
 async function tryRestorePaidAnalysis() {
   const params = new URLSearchParams(window.location.search);
-  if (params.get('paid') !== '1') return;
+  const sessionId = params.get('session_id');
+  if (!sessionId) return;
+
+  // Serverseitige Pruefung: NICHT mehr nur auf einen URL-Parameter vertrauen.
+  // crashguide-verify prueft die session_id gegen Stripe/Supabase und liefert
+  // zurueck, ob wirklich bezahlt wurde UND ob diese Session schon einmal
+  // fuer eine Analyse verwendet wurde (Einmal-Nutzung, serverseitig).
+  let verify;
+  try {
+    const vres = await fetch(VERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId })
+    });
+    verify = await vres.json();
+  } catch (e) {
+    toast('Zahlungsprüfung fehlgeschlagen — bitte Seite neu laden.'); cleanPaidUrl(); return;
+  }
+
+  if (!verify.paid) {
+    toast('Zahlung konnte nicht bestätigt werden.'); cleanPaidUrl(); return;
+  }
+  if (verify.used) {
+    toast('Diese Analyse wurde bereits genutzt. Für eine neue Prüfung bitte erneut bezahlen.'); cleanPaidUrl(); return;
+  }
 
   const raw = localStorage.getItem(CG_PENDING_KEY);
-  if (!raw) { toast('Zahlung erkannt, aber keine gespeicherten Daten gefunden — bitte erneut starten.'); cleanPaidUrl(); return; }
+  if (!raw) { toast('Zahlung bestätigt, aber keine gespeicherten Formulardaten gefunden — bitte erneut starten.'); cleanPaidUrl(); return; }
 
   let snap;
   try { snap = JSON.parse(raw); } catch(e) { toast('Fehler beim Wiederherstellen.'); cleanPaidUrl(); return; }
-  localStorage.removeItem(CG_PENDING_KEY); // Einmal-Nutzung — verhindert erneuten Zugriff ohne neue Zahlung
+  localStorage.removeItem(CG_PENDING_KEY); // lokales Aufräumen zusätzlich zur serverseitigen used-Markierung
 
   photoBase64Arr = snap.photoBase64Arr || (snap.photoBase64 ? [snap.photoBase64] : []); // photoBase64-Fallback für alte Snapshots
   kfzScheinBase64 = snap.kfzScheinBase64 || null;
@@ -1342,6 +1387,15 @@ async function tryRestorePaidAnalysis() {
     berechne();
   }
   saveResultSnapshot();
+
+  // Session als verbraucht markieren — verhindert, dass derselbe session_id-Link
+  // (z.B. per Browser-Zurück oder erneutem Aufruf der URL) nochmal eine Analyse ausloest.
+  fetch(VERIFY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session_id: sessionId, mark_used: true })
+  }).catch(function(e) { console.warn('mark_used Fehler:', e); });
+
   cleanPaidUrl();
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
@@ -1425,7 +1479,8 @@ function showVolumenResult() {
 
 function cleanPaidUrl() {
   const url = new URL(window.location.href);
-  url.searchParams.delete('paid');
+  url.searchParams.delete('session_id');
+  url.searchParams.delete('paid'); // Altlast-Parameter vorsichtshalber mitentfernen
   window.history.replaceState({}, '', url.toString());
 }
 
@@ -1878,7 +1933,7 @@ function finishCaseReveal() {
   document.getElementById('caseCtaSecondary').style.display = allViewed ? 'none' : 'inline';
 
   const c = DEMO_CASES[id];
-  const priceTxt = c.funnel === 'unfall' ? '(3,99 € oder Bundle 4,99 €)' : '(3,99 €)';
+  const priceTxt = c.funnel === 'unfall' ? '(6,99 € oder Bundle 9,99 €)' : '(6,99 €)';
   document.getElementById('caseCtaPrimary').textContent = 'Meinen Schaden jetzt prüfen ' + priceTxt;
 }
 
@@ -1910,7 +1965,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fahrzeugWert').addEventListener('input', () => {
     if (document.getElementById('schadenBetrag').value) updateWertminderung();
   });
-  if (new URLSearchParams(window.location.search).get('paid') === '1') {
+  if (new URLSearchParams(window.location.search).get('session_id')) {
     tryRestorePaidAnalysis();
   } else {
     tryRestoreLastResult();

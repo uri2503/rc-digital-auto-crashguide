@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CrashGuide · Zahlung erfolgreich</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -16,6 +16,7 @@
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
   body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; text-align: center; }
   .success-icon { width: 72px; height: 72px; background: rgba(74,222,128,0.12); border: 2px solid rgba(74,222,128,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.5rem; }
+  .success-icon.pending { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.25); }
   h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; line-height: 1.15; }
   .sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.65; max-width: 320px; }
   .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; width: 100%; max-width: 360px; text-align: left; }
@@ -23,32 +24,74 @@
   .info-value { font-size: 0.85rem; font-weight: 600; color: var(--green); }
   .btn { display: block; width: 100%; max-width: 360px; padding: 0.9rem; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; text-decoration: none; text-align: center; cursor: pointer; border: none; margin-top: 0.75rem; }
   .btn-primary { background: var(--red); color: #fff; }
+  .btn-primary:disabled { opacity: 0.5; }
   .note { font-size: 0.72rem; color: var(--text-muted); margin-top: 1.25rem; line-height: 1.6; }
+  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<div class="success-icon">✓</div>
-<h1>Zahlung erfolgreich!<br>Deine Analyse ist freigeschaltet.</h1>
-<p class="sub">Du hast jetzt Zugang zur vollständigen Schadensanalyse mit SF-Klassen-Rechner und Musterbrief.</p>
+<div class="success-icon" id="icon">✓</div>
+<h1 id="title">Zahlung wird geprüft …</h1>
+<p class="sub" id="sub">Einen Moment, wir bestätigen deine Zahlung bei Stripe.</p>
 
-<div class="info-card">
+<div class="info-card" id="infoCard" style="display:none">
   <div class="info-label">Freigeschaltet</div>
   <div class="info-value">✓ KI-Analyse · SF-Rechner · Musterbrief · Kostenschätzung</div>
 </div>
 
-<a href="tool.html" class="btn btn-primary">Jetzt Analyse starten →</a>
+<a href="#" class="btn btn-primary" id="ctaBtn" style="display:none">Jetzt Analyse starten →</a>
 
 <div class="note">
   Eine Bestätigungsmail wurde an deine E-Mail-Adresse gesendet.<br>
-  <a href="impressum.html" style="color:var(--text-muted);">Impressum</a> ·
-  <a href="datenschutz.html" style="color:var(--text-muted);">Datenschutz</a>
+  <a href="crash-impressum.html" style="color:var(--text-muted);">Impressum</a> ·
+  <a href="crash-datenschutz.html" style="color:var(--text-muted);">Datenschutz</a>
 </div>
 
 <script>
+// Echte serverseitige Verifikation statt reinem Vertrauen auf die URL:
+// crashguide-verify prueft die session_id gegen Stripe und persistiert das
+// Ergebnis in Supabase (crashguide_purchases). Erst danach geht's zum Tool.
 var params = new URLSearchParams(window.location.search);
 var sessionId = params.get('session_id');
-if (sessionId) { localStorage.setItem('crashguide_paid', sessionId); }
+var titleEl = document.getElementById('title');
+var subEl = document.getElementById('sub');
+var iconEl = document.getElementById('icon');
+var ctaBtn = document.getElementById('ctaBtn');
+var infoCard = document.getElementById('infoCard');
+
+function showError(msg) {
+  iconEl.textContent = '✕';
+  iconEl.classList.add('pending');
+  titleEl.textContent = 'Zahlung konnte nicht bestätigt werden';
+  subEl.textContent = msg;
+}
+
+if (!sessionId) {
+  showError('Es wurde keine Zahlungsbestätigung gefunden. Falls du gerade bezahlt hast, kontaktiere uns bitte.');
+} else {
+  fetch('https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/crashguide-verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session_id: sessionId })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.paid) {
+      titleEl.textContent = 'Zahlung erfolgreich!';
+      subEl.textContent = 'Du hast jetzt Zugang zur vollständigen Schadensanalyse mit SF-Klassen-Rechner und Musterbrief.';
+      infoCard.style.display = 'block';
+      ctaBtn.style.display = 'block';
+      ctaBtn.href = 'crash-tool.html?session_id=' + encodeURIComponent(sessionId);
+    } else {
+      showError('Die Zahlung wurde bei Stripe nicht als abgeschlossen erkannt. Falls du bezahlt hast, versuche die Seite neu zu laden oder kontaktiere uns.');
+    }
+  })
+  .catch(function() {
+    showError('Verbindungsfehler bei der Zahlungsprüfung. Bitte lade die Seite neu.');
+  });
+}
 </script>
 
 </body>
