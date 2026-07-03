@@ -2035,7 +2035,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fahrzeugWert').addEventListener('input', () => {
     if (document.getElementById('schadenBetrag').value) updateWertminderung();
   });
-  if (new URLSearchParams(window.location.search).get('session_id')) {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('session_id') || urlParams.get('service')) {
     tryRestorePaidAnalysis();
   } else {
     tryRestoreLastResult();
