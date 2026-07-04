@@ -1933,9 +1933,7 @@ function renderCaseGrid() {
 
 function selectCase(id) {
   cgIntroState.currentCase = id;
-  if (!cgIntroState.funnel) {
-    cgIntroState.funnel = DEMO_CASES[id].funnel;
-  }
+  cgIntroState.funnel = DEMO_CASES[id].funnel;
   const c = DEMO_CASES[id];
 
   document.getElementById('caseSelectScreen').style.display = 'none';
