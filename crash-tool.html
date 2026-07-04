@@ -1382,6 +1382,25 @@ async function runServiceKeyAnalysis(serviceKey) {
     toast('KI-Analyse fehlgeschlagen (' + (e?.message || e) + ') — bitte Betrag manuell prüfen.');
   }
 
+  // Sicherheits-Upgrade: Wurde ueber den Bagatellschaden-Pfad (volumen) eingestiegen,
+  // erkennt die KI-Analyse des tatsaechlich hochgeladenen Fotos aber einen groesseren
+  // Schaden (gross/total), reicht eine reine Kostenschaetzung ohne Versicherungs-Check
+  // nicht aus. Wir stufen dann automatisch auf den Unfall-Funnel hoch und zeigen das
+  // Versicherungsformular, statt direkt ein Ergebnis ohne SF-Vergleich anzuzeigen.
+  const brauchtUpgrade = snap.funnel === 'volumen' && (aiStufe === 'gross' || aiStufe === 'total');
+  if (brauchtUpgrade) {
+    cgIntroState.funnel = 'unfall';
+    toast('Größerer Schaden erkannt — bitte Versicherungsdaten für den Vergleich ergänzen.', true);
+    document.getElementById('inputSection').style.display = 'block';
+    document.getElementById('volumenCta').style.display = 'none';
+    document.getElementById('unfallCta').style.display = 'flex';
+    document.getElementById('progressVolumen').style.display = 'none';
+    document.getElementById('progressUnfall').style.display = 'flex';
+    saveResultSnapshot();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    return;
+  }
+
   if (snap.funnel === 'volumen') {
     showVolumenResult();
   } else {
@@ -1461,7 +1480,17 @@ async function tryRestorePaidAnalysis() {
     toast('KI-Analyse fehlgeschlagen (' + (e?.message || e) + ') — bitte Betrag manuell prüfen.');
   }
 
-  if (snap.funnel === 'volumen') {
+  // Sicherheits-Upgrade: siehe Kommentar in runServiceKeyAnalysis() weiter oben.
+  const brauchtUpgrade = snap.funnel === 'volumen' && (aiStufe === 'gross' || aiStufe === 'total');
+  if (brauchtUpgrade) {
+    cgIntroState.funnel = 'unfall';
+    toast('Größerer Schaden erkannt — bitte Versicherungsdaten für den Vergleich ergänzen.', true);
+    document.getElementById('inputSection').style.display = 'block';
+    document.getElementById('volumenCta').style.display = 'none';
+    document.getElementById('unfallCta').style.display = 'flex';
+    document.getElementById('progressVolumen').style.display = 'none';
+    document.getElementById('progressUnfall').style.display = 'flex';
+  } else if (snap.funnel === 'volumen') {
     showVolumenResult();
   } else {
     berechne();
