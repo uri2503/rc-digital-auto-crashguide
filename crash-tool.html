@@ -667,7 +667,7 @@ section{padding:48px 0}
 
         <div style="background:var(--green-dim);border:1px solid rgba(31,122,77,.25);border-radius:8px;padding:12px 14px;margin-top:18px">
           <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:6px">💶 Das kann sich auszahlen</div>
-          <div style="font-size:12.5px;color:var(--grey-light);line-height:1.6">Eine falsche Entscheidung — Versicherung melden statt selbst zahlen, oder umgekehrt — kann dich über die Rückstufung Hunderte Euro über mehrere Jahre kosten. Die 9,99 € zeigen dir schwarz auf weiß, welche Option für deinen Fall wirklich günstiger ist.</div>
+          <div style="font-size:12.5px;color:var(--grey-light);line-height:1.6" id="bundleHinweisText">Eine falsche Entscheidung — Versicherung melden statt selbst zahlen, oder umgekehrt — kann dich über die Rückstufung Hunderte Euro über mehrere Jahre kosten. Die 9,99 € zeigen dir schwarz auf weiß, welche Option für deinen Fall wirklich günstiger ist.</div>
         </div>
 
         <div class="consent-box" style="text-align:left;display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
@@ -1267,6 +1267,19 @@ function switchToUnfallVergleich() {
     const uebernahme = aiSchadenBetrag || (aiBetragMin && aiBetragMax ? Math.round((aiBetragMin + aiBetragMax) / 2) : null);
     if (uebernahme) betragFeld.value = uebernahme;
   }
+  // Fairness: wer die 6,99€-Analyse schon bezahlt hat, zahlt beim Umstieg auf den
+  // Versicherungsvergleich nur den Aufpreis (3,00€) statt nochmal den vollen Bundle-Preis.
+  if (window.cgAlreadyPaidKs) {
+    const btn = document.getElementById('btnPayBundle');
+    if (btn) {
+      btn.textContent = 'Ergebnis freischalten · 3,00 €';
+      btn.setAttribute('onclick', "return window.cgConsentBundle===true && payWall('upgrade')");
+    }
+    const hinweis = document.getElementById('bundleHinweisText');
+    if (hinweis) {
+      hinweis.textContent = 'Du hast die Analyse bereits bezahlt — der Versicherungsvergleich kostet dich jetzt nur den Aufpreis von 3,00 €, keine Doppelzahlung.';
+    }
+  }
   toast('Bitte Versicherungsdaten ergänzen für den Vergleich.', true);
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
@@ -1307,6 +1320,10 @@ function resetApp() {
 // danach das Ergebnis berechnet/angezeigt.
 window.cgConsentVolumen = false;
 window.cgConsentBundle = false;
+// Merkt sich, ob der Nutzer in dieser Sitzung bereits die 6,99€-Nur-Analyse bezahlt hat.
+// Steigt er danach auf den Versicherungsvergleich um, zahlt er nur den Aufpreis (3,00€)
+// statt nochmal den vollen Bundle-Preis -- siehe switchToUnfallVergleich() und payWall().
+window.cgAlreadyPaidKs = false;
 
 function cgToggleConsent(kind) {
   const isVol = kind === 'volumen';
@@ -1345,7 +1362,7 @@ async function payWall(product) {
   };
   localStorage.setItem(CG_PENDING_KEY, JSON.stringify(snapshot));
 
-  const btn = document.getElementById(product === 'bundle' ? 'btnPayBundle' : 'btnPayVolumen');
+  const btn = document.getElementById(product === 'ks' ? 'btnPayVolumen' : 'btnPayBundle');
 
   // Solo-Testing: liegt ein Service-Key in localStorage, wird Stripe komplett übersprungen
   // und stattdessen direkt der bezahlte Analyse-Pfad mit dem gespeicherten Snapshot gestartet.
@@ -1428,6 +1445,7 @@ async function runServiceKeyAnalysis(serviceKey) {
   }
 
   if (snap.funnel === 'volumen') {
+    if (snap.product === 'ks') window.cgAlreadyPaidKs = true;
     showVolumenResult();
   } else {
     berechne();
@@ -1507,6 +1525,7 @@ async function tryRestorePaidAnalysis() {
   }
 
   if (snap.funnel === 'volumen') {
+    if (snap.product === 'ks') window.cgAlreadyPaidKs = true;
     showVolumenResult();
   } else {
     berechne();
@@ -1655,12 +1674,16 @@ function exportPDF() {
   y = 46;
 
   // ── HEADLINE ──
-  const headline = document.getElementById('resultHeadline').textContent;
+  // Das Warnsymbol (⚠) wird von jsPDFs Standard-Helvetica (WinAnsi-Kodierung) nicht
+  // unterstuetzt und wuerde als Muellzeichen (z.B. "&") erscheinen -- fuer den PDF-Export
+  // entfernen, auf der Bildschirmseite bleibt es unveraendert sichtbar.
+  const headline = document.getElementById('resultHeadline').textContent.replace(/^\s*⚠\s*/, '');
   doc.setFont('helvetica','bold');
   doc.setFontSize(14);
   setColor(COL_PRIMARY);
-  doc.text(headline, margin, y);
-  y += 10;
+  const headlineLines = doc.splitTextToSize(headline, contentW);
+  doc.text(headlineLines, margin, y);
+  y += headlineLines.length * 7 + 4;
 
   // ── SZENARIEN ──
   const cards = document.querySelectorAll('#scenarioGrid .scenario');
@@ -1760,10 +1783,13 @@ function exportPDF() {
     doc.setFont('helvetica', isTotal ? 'bold' : 'normal');
     doc.text(val, W - margin, y, {align:'right'});
 
-    y += isTotal ? 6 : 5.5;
+    // Trennlinie direkt unter der aktuellen Zeile zeichnen (VOR dem Hochzaehlen von y),
+    // mit sicherem Abstand zur naechsten Zeile -- sonst schneidet sie durch deren Versalhoehe.
     if (!isTotal) {
-      line(margin, y - 1, W - margin, y - 1, [40,40,40]);
+      line(margin, y + 2, W - margin, y + 2, [40,40,40]);
     }
+
+    y += isTotal ? 6 : 5.5;
   });
   y += 8;
 
@@ -2113,6 +2139,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-04-3</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-04-4</span></div>
 </body>
 </html>
