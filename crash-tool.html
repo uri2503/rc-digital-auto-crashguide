@@ -1350,11 +1350,16 @@ async function payWall(product) {
     toast('Bitte Foto(s) hochladen oder Betrag eingeben'); return;
   }
   const snapshot = {
-    product: product, // 'ks' | 'bundle'
+    product: product, // 'ks' | 'bundle' | 'upgrade'
     funnel: cgIntroState.funnel,
     photoBase64Arr: photoBase64Arr,
     kfzScheinBase64: kfzScheinBase64,
     werkstatt: currentWerkstatt,
+    // KI-Analyse aus einem bereits bezahlten Nur-Analyse-Schritt mitgeben, damit beim
+    // Umstieg auf den Versicherungsvergleich (Produkt 'upgrade') die KI NICHT ein zweites
+    // Mal auf demselben Foto laufen muss -- spart Kosten und Wartezeit, siehe runServiceKeyAnalysis().
+    aiSchadenBetrag: aiSchadenBetrag, aiStufe: aiStufe, aiBeschreibung: aiBeschreibung,
+    aiBetragMin: aiBetragMin, aiBetragMax: aiBetragMax,
     schadenBetrag: fieldVal('schadenBetrag'),
     fahrzeugModell: fieldVal('fahrzeugModell'),
     fahrzeugBaujahr: fieldVal('fahrzeugBaujahr'),
@@ -1433,6 +1438,18 @@ async function runServiceKeyAnalysis(serviceKey) {
   currentWerkstatt = snap.werkstatt || 'frei';
   cgIntroState.funnel = snap.funnel;
 
+  // Wurde die KI-Analyse schon fuer einen vorherigen Kauf (z.B. die 6,99€-Nur-Analyse)
+  // durchgefuehrt, uebernehmen wir das Ergebnis, statt beim Upgrade auf den Versicherungs-
+  // vergleich dieselbe Foto-Analyse ein zweites Mal (und ein zweites Mal kostenpflichtig) laufen zu lassen.
+  const hatVorherigeAnalyse = !!(snap.aiBeschreibung || snap.aiSchadenBetrag);
+  if (hatVorherigeAnalyse) {
+    aiSchadenBetrag = snap.aiSchadenBetrag ?? null;
+    aiStufe = snap.aiStufe ?? null;
+    aiBeschreibung = snap.aiBeschreibung ?? '';
+    aiBetragMin = snap.aiBetragMin ?? null;
+    aiBetragMax = snap.aiBetragMax ?? null;
+  }
+
   document.getElementById('introSection').style.display = 'none';
   document.getElementById('inputSection').style.display = 'none';
   if (document.getElementById('schadenBetrag')) document.getElementById('schadenBetrag').value = snap.schadenBetrag || '';
@@ -1447,7 +1464,7 @@ async function runServiceKeyAnalysis(serviceKey) {
   toast('Service-Key akzeptiert — Analyse läuft ✓', true);
 
   try {
-    if (photoBase64Arr.length) { showAnalysisOverlay(); await analysePhotoPaid(); }
+    if (photoBase64Arr.length && !hatVorherigeAnalyse) { showAnalysisOverlay(); await analysePhotoPaid(); }
   } catch (e) {
     toast('KI-Analyse fehlgeschlagen (' + (e?.message || e) + ') — bitte Betrag manuell prüfen.');
   } finally {
@@ -1515,6 +1532,18 @@ async function tryRestorePaidAnalysis() {
   currentWerkstatt = snap.werkstatt || 'frei';
   cgIntroState.funnel = snap.funnel;
 
+  // Wurde die KI-Analyse schon fuer einen vorherigen Kauf durchgefuehrt, uebernehmen wir
+  // das Ergebnis, statt beim Upgrade auf den Versicherungsvergleich dieselbe Foto-Analyse
+  // ein zweites Mal (und ein zweites Mal kostenpflichtig) laufen zu lassen.
+  const hatVorherigeAnalyse = !!(snap.aiBeschreibung || snap.aiSchadenBetrag);
+  if (hatVorherigeAnalyse) {
+    aiSchadenBetrag = snap.aiSchadenBetrag ?? null;
+    aiStufe = snap.aiStufe ?? null;
+    aiBeschreibung = snap.aiBeschreibung ?? '';
+    aiBetragMin = snap.aiBetragMin ?? null;
+    aiBetragMax = snap.aiBetragMax ?? null;
+  }
+
   document.getElementById('introSection').style.display = 'none';
   document.getElementById('inputSection').style.display = 'none'; // bleibt unsichtbar, wir springen direkt zum Ergebnis
   if (document.getElementById('schadenBetrag')) document.getElementById('schadenBetrag').value = snap.schadenBetrag || '';
@@ -1529,7 +1558,7 @@ async function tryRestorePaidAnalysis() {
   toast('Zahlung erfolgreich — Analyse läuft ✓', true);
 
   try {
-    if (photoBase64Arr.length) { showAnalysisOverlay(); await analysePhotoPaid(); }
+    if (photoBase64Arr.length && !hatVorherigeAnalyse) { showAnalysisOverlay(); await analysePhotoPaid(); }
   } catch (e) {
     toast('KI-Analyse fehlgeschlagen (' + (e?.message || e) + ') — bitte Betrag manuell prüfen.');
   } finally {
@@ -1685,6 +1714,44 @@ function exportPDF() {
   doc.text('Erstellt am ' + new Date().toLocaleDateString('de-DE'), W - margin, 24, {align:'right'});
   y = 46;
 
+  // ── URSPRUENGLICHER KI-SCHADENBERICHT ──
+  // Nur vorhanden, wenn zuvor schon eine Foto-Analyse lief (z.B. aus einem vorherigen
+  // Nur-Analyse-Kauf, den der Nutzer jetzt auf den Versicherungsvergleich upgraded).
+  // So bekommt der Nutzer beide Berichte in einem PDF, ohne dass die KI ein zweites
+  // Mal auf demselben Foto laufen musste.
+  if (aiBeschreibung) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    setColor(COL_GREY);
+    doc.text('KI-SCHADENBERICHT', margin, y);
+    y += 6;
+    line(margin, y, W - margin, y, COL_BORDER);
+    y += 6;
+
+    let descX = margin, descW = contentW;
+    if (photoBase64Arr.length) {
+      try {
+        const imgW = 42; const imgH = imgW * 0.68;
+        doc.addImage('data:image/jpeg;base64,' + photoBase64Arr[0], 'JPEG', margin, y, imgW, imgH);
+        descX = margin + imgW + 6; descW = contentW - imgW - 6;
+      } catch(e) { console.warn('PDF-Bild-Fehler (Schadenbericht):', e); }
+    }
+    if (aiBetragMin && aiBetragMax) {
+      doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      setColor(COL_PRIMARY);
+      doc.text(String.fromCharCode(8364) + aiBetragMin.toLocaleString('de') + ' – ' + String.fromCharCode(8364) + aiBetragMax.toLocaleString('de'), descX, y + 5);
+    }
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+    setColor([60,60,60]);
+    const descLines = doc.splitTextToSize(aiBeschreibung, descW).slice(0, 7);
+    doc.text(descLines, descX, y + 12);
+    y += Math.max(photoBase64Arr.length ? 42*0.68 : 0, descLines.length * 4 + 12) + 10;
+  }
+
+  // Seitenumbruch-Absicherung: reicht der verbleibende Platz nicht mehr fuer Szenarien
+  // + Detailrechnung + Disclaimer, wird auf einer neuen Seite fortgefahren, statt den
+  // Inhalt am unteren Rand abzuschneiden oder zu ueberlappen.
+  if (y > 150) { doc.addPage(); y = 20; }
+
   // ── HEADLINE ──
   // Das Warnsymbol (⚠) wird von jsPDFs Standard-Helvetica (WinAnsi-Kodierung) nicht
   // unterstuetzt und wuerde als Muellzeichen (z.B. "&") erscheinen -- fuer den PDF-Export
@@ -1822,12 +1889,18 @@ function exportPDF() {
   y += 24;
 
   // ── FOOTER ──
-  doc.setFillColor(240,240,240);
-  doc.rect(0, 282, W, 15, 'F');
-  doc.setFont('helvetica','normal'); doc.setFontSize(7);
-  setColor([100,100,100]);
-  doc.text('CrashGuide · uri2503.github.io/auto_guide_crash', margin, 290);
-  doc.text('Seite 1 / 1', W - margin, 290, {align:'right'});
+  // Wird jetzt auf JEDER Seite gezeichnet (nicht nur der letzten), falls der zusaetzliche
+  // KI-Schadenbericht oben einen Seitenumbruch ausgeloest hat.
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFillColor(240,240,240);
+    doc.rect(0, 282, W, 15, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    setColor([100,100,100]);
+    doc.text('CrashGuide · uri2503.github.io/auto_guide_crash', margin, 290);
+    doc.text('Seite ' + p + ' / ' + totalPages, W - margin, 290, {align:'right'});
+  }
 
   // ── SAVE ──
   const filename = 'CrashGuide_' + new Date().toISOString().slice(0,10) + '.pdf';
@@ -2160,7 +2233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-04-5</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-04-6</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
