@@ -1934,6 +1934,10 @@ function renderCaseGrid() {
 function selectCase(id) {
   cgIntroState.currentCase = id;
   cgIntroState.funnel = DEMO_CASES[id].funnel;
+  // Verhindert, dass ein zuvor gespeichertes Ergebnis (z.B. vom Opel-Fall) beim
+  // naechsten Seitenaufruf automatisch ueber den neu gewaehlten Fall (z.B. BMW)
+  // gelegt wird -- siehe tryRestoreLastResult(), das sonst blind wiederherstellt.
+  try { localStorage.removeItem(CG_RESULT_KEY); } catch(e) {}
   const c = DEMO_CASES[id];
 
   document.getElementById('caseSelectScreen').style.display = 'none';
