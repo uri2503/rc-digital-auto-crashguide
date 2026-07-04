@@ -2066,9 +2066,17 @@ document.addEventListener('DOMContentLoaded', () => {
     tryRestorePaidAnalysis();
   } else {
     tryRestoreLastResult();
+    // Kommt der Nutzer von der Landingpage (auto-unfallschaden.de / index.html) und hat dort
+    // schon einen Fall gewaehlt (?case=bagatell oder ?case=front), soll er hier nicht nochmal
+    // vor dieselbe Wahl gestellt werden. Wir springen direkt in den passenden Demo-Fall.
+    const caseParam = urlParams.get('case');
+    const caseMap = { bagatell: 'kratzer', front: 'seitenwand' };
+    if (caseParam && caseMap[caseParam] && DEMO_CASES[caseMap[caseParam]]) {
+      selectCase(caseMap[caseParam]);
+    }
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-04-1</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-04-2</span></div>
 </body>
 </html>
