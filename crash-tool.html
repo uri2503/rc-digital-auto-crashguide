@@ -292,7 +292,7 @@ section{padding:48px 0}
     <button class="how-toggle" id="howBtn" onclick="toggleHow()">? Wie funktioniert Auto-Unfallschaden?</button>
     <div class="how-panel" id="howPanel">
       <ol>
-        <li>Schau dir an, wie detailliert wir 3 typische Schäden einschätzen — kostet nichts</li>
+        <li>Schau dir an, wie detailliert wir 2 typische Schäden einschätzen — kostet nichts</li>
         <li>Foto deines eigenen Schadens hochladen und Versicherungsdaten ergänzen</li>
         <li>Deine individuelle KI-Schadensschätzung freischalten (6,99 €) oder zusammen mit der SF-Rückstufung als Bundle (9,99 €)</li>
         <li>Ergebnis ansehen: Selbstzahlung oder Versicherung — mit echten Zahlen verglichen</li>
@@ -1259,7 +1259,7 @@ function berechne() {
   // Szenarien-Karten
   const rabattHinweis = rabattschutz ? ' — Rabattschutz aktiv!' : '';
   const wertHinweis   = fahrzeugWert > 0
-    ? 'Fahrzeugwert sinkt auf ' + String.fromCharCode(8364) + Math.round(fahrzeugWert - wertminderung).toLocaleString('de') + '.'
+    ? 'Fahrzeugwert sinkt auf ' + Math.round(fahrzeugWert - wertminderung).toLocaleString('de') + ' ' + String.fromCharCode(8364) + '.'
     : 'Fahrzeugwert eingeben fuer genaue Angabe.';
 
   const s1Class = s1 === minKosten ? 'green' : 'red';
@@ -1285,7 +1285,7 @@ function berechne() {
     div.innerHTML += '<div class="scenario-icon">' + icon + '</div>'
       + '<div class="scenario-label">' + optLabel + '</div>'
       + '<div class="scenario-title">' + title + '</div>'
-      + '<div class="scenario-cost ' + costClass + '">' + String.fromCharCode(8364) + costVal.toLocaleString('de') + '</div>'
+      + '<div class="scenario-cost ' + costClass + '">' + costVal.toLocaleString('de') + ' ' + String.fromCharCode(8364) + '</div>'
       + '<div class="scenario-detail">' + detail + '</div>';
     grid.appendChild(div);
   }
@@ -1296,7 +1296,7 @@ function berechne() {
 
   makeCard(sc2Winner, '📋', 'Option 2', 'Versicherung melden',
     Math.round(s2), s2Class,
-    'SB ' + String.fromCharCode(8364) + sb + ' jetzt + ' + String.fromCharCode(8364) + Math.round(beitragsMehrJahr) + '/Jahr Mehrkosten. '
+    'SB ' + sb + ' ' + String.fromCharCode(8364) + ' jetzt + ' + Math.round(beitragsMehrJahr) + ' ' + String.fromCharCode(8364) + '/Jahr Mehrkosten. '
     + 'Rueckstufung: SF ' + sfVorLabel + ' zu SF ' + sfNachLabel + '. '
     + 'Rueckstufungsdauer: ~' + jahreZurueck + ' Jahre.' + rabattHinweis);
 
@@ -1308,16 +1308,16 @@ function berechne() {
 
   // Detailrechnung
   const rows = [
-    ['Werkstatttyp', wTyp.label + ' (~' + String.fromCharCode(8364) + wTyp.stundensatz + '/h)', ''],
-    ['Schadenbetrag', String.fromCharCode(8364) + Math.round(schaden).toLocaleString('de'), ''],
-    ['Selbstbeteiligung', String.fromCharCode(8364) + sb.toLocaleString('de'), ''],
-    ['Aktueller Jahresbeitrag', String.fromCharCode(8364) + Math.round(jahresBeitrag).toLocaleString('de'), ''],
+    ['Werkstatttyp', wTyp.label + ' (~' + wTyp.stundensatz + ' ' + String.fromCharCode(8364) + '/h)', ''],
+    ['Schadenbetrag', Math.round(schaden).toLocaleString('de') + ' ' + String.fromCharCode(8364), ''],
+    ['Selbstbeteiligung', sb.toLocaleString('de') + ' ' + String.fromCharCode(8364), ''],
+    ['Aktueller Jahresbeitrag', Math.round(jahresBeitrag).toLocaleString('de') + ' ' + String.fromCharCode(8364), ''],
     ['SF-Klasse vor Meldung', 'SF ' + sfVorLabel, ''],
     ['SF-Klasse nach Rueckstufung', 'SF ' + sfNachLabel, 'red'],
-    ['Beitragsmehrkosten pro Jahr', '+' + String.fromCharCode(8364) + Math.round(beitragsMehrJahr).toLocaleString('de'), 'red'],
+    ['Beitragsmehrkosten pro Jahr', '+' + Math.round(beitragsMehrJahr).toLocaleString('de') + ' ' + String.fromCharCode(8364), 'red'],
     ['Hochstufungsdauer', '~' + jahreZurueck + ' Jahre', ''],
-    ['Gesamtmehrkosten Versicherung', String.fromCharCode(8364) + Math.round(gesamtMehrkosten).toLocaleString('de'), 'red'],
-    ['Wertminderung (unrepariert)', '-' + String.fromCharCode(8364) + Math.round(wertminderung).toLocaleString('de'), 'amber'],
+    ['Gesamtmehrkosten Versicherung', Math.round(gesamtMehrkosten).toLocaleString('de') + ' ' + String.fromCharCode(8364), 'red'],
+    ['Wertminderung (unrepariert)', '-' + Math.round(wertminderung).toLocaleString('de') + ' ' + String.fromCharCode(8364), 'amber'],
   ];
 
   const empfehlungText = empfehlung === 'self' ? 'Selbst zahlen' : (empfehlung === 'versicherung' ? 'Versicherung melden' : 'Nichts tun');
@@ -1327,7 +1327,7 @@ function berechne() {
     bdHtml += '<div class="breakdown-row"><span class="key">' + r[0] + '</span><span class="val ' + r[2] + '">' + r[1] + '</span></div>';
   });
   bdHtml += '<div class="breakdown-row total"><span class="key">Guenstigste Option</span>'
-    + '<span class="val green">' + empfehlungText + ' (' + String.fromCharCode(8364) + Math.round(minKosten).toLocaleString('de') + ')</span></div>';
+    + '<span class="val green">' + empfehlungText + ' (' + Math.round(minKosten).toLocaleString('de') + ' ' + String.fromCharCode(8364) + ')</span></div>';
   document.getElementById('breakdownBox').innerHTML = bdHtml;
 
   // Views
@@ -2170,7 +2170,8 @@ const DEMO_CASES = {
 
 let cgIntroState = { viewedCases: [], currentCase: null, funnel: null };
 
-function fmtEuro(n) { return '€' + Math.round(n).toLocaleString('de'); }
+function fmtEuro(n) { return Math.round(n).toLocaleString('de') + ' ' + String.fromCharCode(8364); }
+function fmtNum(n) { return Math.round(n).toLocaleString('de'); }
 
 function renderCaseGrid() {
   const grid = document.getElementById('caseGrid');
@@ -2222,13 +2223,13 @@ function selectCase(id) {
 function revealKS() {
   const c = DEMO_CASES[cgIntroState.currentCase];
   document.getElementById('revealKSText').textContent = c.beschreibung;
-  document.getElementById('revealKSCost').textContent = fmtEuro(c.kostenMin) + ' – ' + fmtEuro(c.kostenMax);
+  document.getElementById('revealKSCost').textContent = fmtNum(c.kostenMin) + ' – ' + fmtNum(c.kostenMax) + ' ' + String.fromCharCode(8364);
   document.getElementById('guessStepKS').style.display = 'none';
   document.getElementById('revealKSBox').classList.add('show');
 
   const realityBox = document.getElementById('realityBox');
   if (c.realBetrag) {
-    document.getElementById('realityAiVal').textContent = fmtEuro(c.kostenMin) + '–' + fmtEuro(c.kostenMax);
+    document.getElementById('realityAiVal').textContent = fmtNum(c.kostenMin) + '–' + fmtNum(c.kostenMax) + ' ' + String.fromCharCode(8364);
     document.getElementById('realityRealVal').textContent = fmtEuro(c.realBetrag);
     document.getElementById('realityText').innerHTML =
       'Laut <strong style="color:var(--white)">' + c.realQuelle + '</strong> lag der tatsächliche Schaden bei ' + fmtEuro(c.realBetrag) + ' — mehr als das ' +
@@ -2330,7 +2331,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-6</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-7</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
