@@ -515,6 +515,12 @@ section{padding:48px 0}
       <div class="card">
         <div class="card-title">Fahrzeugdaten</div>
         <div class="card-hint">Hilft uns, die Wertminderung durch den Schaden realistisch einzuschätzen.</div>
+        <!-- Erinnerung an den bereits hochgeladenen Schaden aus Schritt 1 -- ohne das war
+             fuer den Nutzer nicht erkennbar, dass sein Foto tatsaechlich uebernommen wurde. -->
+        <div class="stepPhotoReminder" style="display:none;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin-bottom:8px">Dein hochgeladener Schaden</div>
+          <img class="stepPhotoReminderImg" style="width:72px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+        </div>
         <div class="field" id="schadenFeld2" style="margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)">
           <label>Schadenbetrag (€) — falls noch nicht eingegeben</label>
           <input type="number" id="schadenBetrag2" placeholder="z.B. 800" min="0"
@@ -567,6 +573,10 @@ section{padding:48px 0}
       <div class="card">
         <div class="card-title">Melden oder selbst zahlen?</div>
         <div class="card-hint">Trag deine Versicherungsdaten ein — du findest sie auf deiner Kfz-Police oder dem letzten Beitragsbescheid. Wir zeigen dir in Sekunden, welche Option dich am Ende weniger kostet.</div>
+        <div class="stepPhotoReminder" style="display:none;margin:14px 0 18px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+          <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin-bottom:8px">Dein hochgeladener Schaden</div>
+          <img class="stepPhotoReminderImg" style="width:72px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+        </div>
 
         <div class="field">
           <label>Versicherer</label>
@@ -709,6 +719,9 @@ section{padding:48px 0}
       <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:6px">⚠ Wichtiger Hinweis</div>
       <div style="font-size:12.5px;color:var(--grey-light);line-height:1.7">Diese Berechnung ist eine unverbindliche Orientierungshilfe — kein Kostenvoranschlag, kein Gutachten. Für ein verbindliches Angebot wende dich an eine Werkstatt deiner Wahl.</div>
     </div>
+    <div style="background:var(--amber-dim);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:10px 14px;margin-top:16px;max-width:560px;margin-left:auto;margin-right:auto;font-size:12px;color:var(--grey-light);text-align:center">
+      ⚠ Speichere dein Ergebnis als PDF, bevor du eine neue Prüfung startest — danach sind diese Daten gelöscht und ein erneuter Kauf wäre nötig.
+    </div>
     <div class="action-row" style="max-width:560px;margin:20px auto 0">
       <button class="btn btn-ghost" onclick="resetApp()" style="flex:1">← Neue Prüfung</button>
       <button class="btn btn-primary" onclick="exportVolumenPDF()" style="flex:1">⬇ Als PDF speichern</button>
@@ -726,6 +739,17 @@ section{padding:48px 0}
     <div class="result-header">
       <div class="label">Deine Entscheidungshilfe</div>
       <h2 id="resultHeadline">Ergebnis</h2>
+    </div>
+
+    <!-- KI-Schadenbericht direkt sichtbar -- vorher bekam der Nutzer nur eine Zahl und
+         musste erst das PDF oeffnen, um die Begruendung/Beschreibung dahinter zu sehen. -->
+    <div id="resultAiBox" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start">
+      <img id="resultAiImg" style="display:none;width:64px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin-bottom:4px">KI-Schadenbericht</div>
+        <div id="resultAiKosten" style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:4px"></div>
+        <div id="resultAiText" style="font-size:12.5px;color:var(--grey-light);line-height:1.55"></div>
+      </div>
     </div>
 
     <div class="scenario-grid" id="scenarioGrid"></div>
@@ -747,6 +771,9 @@ section{padding:48px 0}
       </div>
     </div>
 
+    <div style="background:var(--amber-dim);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:10px 14px;margin-top:16px;font-size:12px;color:var(--grey-light);text-align:center">
+      ⚠ Speichere dein Ergebnis als PDF, bevor du eine neue Berechnung startest — danach sind diese Daten gelöscht und ein erneuter Kauf wäre nötig.
+    </div>
     <div class="action-row">
       <button class="btn btn-ghost" onclick="resetApp()" style="flex:1">← Neue Berechnung</button>
       <button class="btn btn-primary" id="exportBtn" onclick="exportPDF()" style="flex:1">⬇ Als PDF speichern</button>
@@ -866,6 +893,21 @@ const SICHERHEITS_SCHWELLE = 2500; // Ab diesem Betrag OHNE KI-Stufe (manuelle E
 // ═══════════════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════════════
+// Zeigt in Schritt 2/3 eine kleine Erinnerung an das bereits hochgeladene Schadenfoto,
+// damit der Nutzer sieht, dass sein Foto tatsaechlich uebernommen wurde -- vorher war das
+// nur am gruenen Haken in der Fortschrittsleiste "erkennbar", was zu Verwirrung fuehrte.
+function renderStepPhotoReminder() {
+  const hatFoto = photoBase64Arr.length > 0;
+  document.querySelectorAll('.stepPhotoReminder').forEach(el => {
+    el.style.display = hatFoto ? 'block' : 'none';
+  });
+  if (hatFoto) {
+    document.querySelectorAll('.stepPhotoReminderImg').forEach(img => {
+      img.src = 'data:image/jpeg;base64,' + photoBase64Arr[0];
+    });
+  }
+}
+
 function goStep(n) {
   if (n === 2) {
     // Betrag aus Schritt 1 in Schritt 2 übertragen
@@ -882,6 +924,7 @@ function goStep(n) {
   ['step1','step2','step3'].forEach((s,i) => {
     document.getElementById(s).style.display = i+1 === n ? 'block' : 'none';
   });
+  if (n === 2 || n === 3) renderStepPhotoReminder();
   // Beim Zurueckgehen auf Schritt 1 muss die Pfad-Wahl (6,99€/9,99€) wieder erscheinen --
   // goStep() alleine kuemmert sich sonst nur um step1/2/3, nicht um pathChoice/volumenCta/
   // unfallCta, die von choosePath() zuvor ausgeblendet wurden. Ohne das haette der Nutzer
@@ -1115,6 +1158,26 @@ function beitragssatz(sf) {
 }
 
 function berechne() {
+  // KI-Schadenbericht direkt im Ergebnis-Screen zeigen (nicht erst im PDF) --
+  // nur vorhanden, wenn tatsaechlich eine Foto-Analyse gelaufen ist.
+  const resultAiBox = document.getElementById('resultAiBox');
+  if (aiBeschreibung) {
+    resultAiBox.style.display = 'flex';
+    const img = document.getElementById('resultAiImg');
+    if (photoBase64Arr.length) {
+      img.src = 'data:image/jpeg;base64,' + photoBase64Arr[0];
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+    document.getElementById('resultAiKosten').textContent = (aiBetragMin && aiBetragMax)
+      ? aiBetragMin.toLocaleString('de') + ' – ' + aiBetragMax.toLocaleString('de') + ' €'
+      : '';
+    document.getElementById('resultAiText').textContent = aiBeschreibung;
+  } else {
+    resultAiBox.style.display = 'none';
+  }
+
   const schaden      = parseFloat(document.getElementById('schadenBetrag').value) || 0;
   const fahrzeugWert = parseFloat(document.getElementById('fahrzeugWert').value)  || 0;
   const versicherer  = document.getElementById('versicherer').value;
@@ -1670,7 +1733,7 @@ function tryRestoreLastResult() {
 function showVolumenResult() {
   const betrag = aiSchadenBetrag || parseFloat(document.getElementById('schadenBetrag').value) || 0;
   document.getElementById('vrCost').textContent =
-    aiBetragMin && aiBetragMax ? '€' + aiBetragMin.toLocaleString('de') + ' – €' + aiBetragMax.toLocaleString('de') : '€' + Math.round(betrag).toLocaleString('de');
+    aiBetragMin && aiBetragMax ? aiBetragMin.toLocaleString('de') + ' – ' + aiBetragMax.toLocaleString('de') + ' €' : Math.round(betrag).toLocaleString('de') + ' €';
   document.getElementById('vrText').textContent = aiBeschreibung || 'Manuell eingegebener Betrag, keine Foto-Analyse vorhanden.';
   const img = document.getElementById('vrImg');
   if (photoBase64Arr.length) {
@@ -1761,7 +1824,7 @@ function exportPDF() {
     if (aiBetragMin && aiBetragMax) {
       doc.setFont('helvetica','bold'); doc.setFontSize(12);
       setColor(COL_PRIMARY);
-      doc.text(String.fromCharCode(8364) + aiBetragMin.toLocaleString('de') + ' – ' + String.fromCharCode(8364) + aiBetragMax.toLocaleString('de'), descX, y + 5);
+      doc.text(aiBetragMin.toLocaleString('de') + ' – ' + aiBetragMax.toLocaleString('de') + ' ' + String.fromCharCode(8364), descX, y + 5);
     }
     doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
     setColor([60,60,60]);
@@ -2258,7 +2321,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-2</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-4</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
