@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Auto-Unfallschaden · Mein Auto-Assistent</title>
+<title>Auto-Unfallcheck · Mein Auto-Assistent</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 :root {
@@ -289,7 +289,7 @@ section{padding:48px 0}
       </div>
     </div>
 
-    <button class="how-toggle" id="howBtn" onclick="toggleHow()">? Wie funktioniert Auto-Unfallschaden?</button>
+    <button class="how-toggle" id="howBtn" onclick="toggleHow()">? Wie funktioniert Auto-Unfallcheck?</button>
     <div class="how-panel" id="howPanel">
       <ol>
         <li>Schau dir an, wie detailliert wir 2 typische Schäden einschätzen — kostet nichts</li>
@@ -786,7 +786,7 @@ section{padding:48px 0}
 </div>
 
 <footer style="background:#0F2840;padding:24px 20px;text-align:center;margin-top:8px">
-  <p style="font-size:12px;color:#5C84A8">Auto-Unfallschaden &nbsp;·&nbsp; <a href="crash-impressum.html" style="color:#5C84A8;text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="crash-datenschutz.pdf" style="color:#5C84A8;text-decoration:none">Datenschutz</a></p>
+  <p style="font-size:12px;color:#5C84A8">Auto-Unfallcheck &nbsp;·&nbsp; <a href="crash-impressum.html" style="color:#5C84A8;text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="crash-datenschutz.pdf" style="color:#5C84A8;text-decoration:none">Datenschutz</a></p>
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -1801,7 +1801,7 @@ function exportPDF() {
   doc.setFont('helvetica','bold');
   doc.setFontSize(22);
   setColor([250,249,246]);
-  doc.text('Auto-Unfallschaden', margin, 16);
+  doc.text('Auto-Unfallcheck', margin, 16);
   doc.setFontSize(9);
   doc.setFont('helvetica','normal');
   setColor([180,195,210]);
@@ -1993,12 +1993,12 @@ function exportPDF() {
     doc.rect(0, 282, W, 15, 'F');
     doc.setFont('helvetica','normal'); doc.setFontSize(7);
     setColor([100,100,100]);
-    doc.text('Auto-Unfallschaden · mein-auto-assistent.de', margin, 290);
+    doc.text('Auto-Unfallcheck · mein-auto-assistent.de', margin, 290);
     doc.text('Seite ' + p + ' / ' + totalPages, W - margin, 290, {align:'right'});
   }
 
   // ── SAVE ──
-  const filename = 'Auto-Unfallschaden_' + new Date().toISOString().slice(0,10) + '.pdf';
+  const filename = 'Auto-Unfallcheck_' + new Date().toISOString().slice(0,10) + '.pdf';
   doc.save(filename);
   toast('PDF gespeichert: ' + filename, true);
 }
@@ -2025,7 +2025,7 @@ function exportVolumenPDF() {
   doc.rect(0, 33, W, 3, 'F');
   doc.setFont('helvetica','bold'); doc.setFontSize(22);
   setColor([250,249,246]);
-  doc.text('Auto-Unfallschaden', margin, 16);
+  doc.text('Auto-Unfallcheck', margin, 16);
   doc.setFontSize(9); doc.setFont('helvetica','normal');
   setColor([180,195,210]);
   doc.text('Schadensschätzung', margin, 24);
@@ -2094,10 +2094,10 @@ function exportVolumenPDF() {
   doc.rect(0, 282, W, 15, 'F');
   doc.setFont('helvetica','normal'); doc.setFontSize(7);
   setColor([100,100,100]);
-  doc.text('Auto-Unfallschaden · mein-auto-assistent.de', margin, 290);
+  doc.text('Auto-Unfallcheck · mein-auto-assistent.de', margin, 290);
   doc.text('Seite 1 / 1', W - margin, 290, {align:'right'});
 
-  const filename = 'Auto-Unfallschaden_Schaetzung_' + new Date().toISOString().slice(0,10) + '.pdf';
+  const filename = 'Auto-Unfallcheck_Schaetzung_' + new Date().toISOString().slice(0,10) + '.pdf';
   doc.save(filename);
   toast('PDF gespeichert: ' + filename, true);
 }
@@ -2114,7 +2114,7 @@ function toggleHow() {
   const btn = document.getElementById('howBtn');
   if (!panel) return;
   const open = panel.classList.toggle('show');
-  if (btn) btn.textContent = open ? '– Weniger anzeigen' : '? Wie funktioniert Auto-Unfallschaden?';
+  if (btn) btn.textContent = open ? '– Weniger anzeigen' : '? Wie funktioniert Auto-Unfallcheck?';
 }
 
 function showAnalysisOverlay() {
@@ -2234,7 +2234,7 @@ function revealKS() {
     document.getElementById('realityText').innerHTML =
       'Laut <strong style="color:var(--white)">' + c.realQuelle + '</strong> lag der tatsächliche Schaden bei ' + fmtEuro(c.realBetrag) + ' — mehr als das ' +
       Math.round(c.realBetrag / c.kostenMax) + '-fache der KI-Schätzung. ' + c.realErklaerung +
-      ' Genau deshalb ersetzt Auto-Unfallschaden bei erheblichen Schäden keine echte Begutachtung — sondern hilft dir, die richtige Entscheidung zu treffen, ob sich Versicherung oder Werkstatt/Gutachter lohnt.';
+      ' Genau deshalb ersetzt Auto-Unfallcheck bei erheblichen Schäden keine echte Begutachtung — sondern hilft dir, die richtige Entscheidung zu treffen, ob sich Versicherung oder Werkstatt/Gutachter lohnt.';
     realityBox.classList.add('show');
   } else {
     realityBox.classList.remove('show');
@@ -2320,7 +2320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tryRestorePaidAnalysis();
   } else {
     tryRestoreLastResult();
-    // Kommt der Nutzer von der Landingpage (auto-unfallschaden.de / index.html) und hat dort
+    // Kommt der Nutzer von der Landingpage (auto-unfallcheck.de / index.html) und hat dort
     // schon einen Fall gewaehlt (?case=bagatell oder ?case=front), soll er hier nicht nochmal
     // vor dieselbe Wahl gestellt werden. Wir springen direkt in den passenden Demo-Fall.
     const caseParam = urlParams.get('case');
@@ -2331,7 +2331,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-7</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-8</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
