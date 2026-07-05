@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CrashGuide · Mein Auto-Assistent</title>
+<title>Auto-Unfallschaden · Mein Auto-Assistent</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 :root {
@@ -289,7 +289,7 @@ section{padding:48px 0}
       </div>
     </div>
 
-    <button class="how-toggle" id="howBtn" onclick="toggleHow()">? Wie funktioniert CrashGuide?</button>
+    <button class="how-toggle" id="howBtn" onclick="toggleHow()">? Wie funktioniert Auto-Unfallschaden?</button>
     <div class="how-panel" id="howPanel">
       <ol>
         <li>Schau dir an, wie detailliert wir 3 typische Schäden einschätzen — kostet nichts</li>
@@ -521,7 +521,7 @@ section{padding:48px 0}
           <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin-bottom:8px">Dein hochgeladener Schaden</div>
           <img class="stepPhotoReminderImg" style="width:72px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
         </div>
-        <div class="field" id="schadenFeld2" style="margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+        <div class="field" id="schadenFeld2" style="display:none;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)">
           <label>Schadenbetrag (€) — falls noch nicht eingegeben</label>
           <input type="number" id="schadenBetrag2" placeholder="z.B. 800" min="0"
             oninput="document.getElementById('schadenBetrag').value=this.value">
@@ -786,7 +786,7 @@ section{padding:48px 0}
 </div>
 
 <footer style="background:#0F2840;padding:24px 20px;text-align:center;margin-top:8px">
-  <p style="font-size:12px;color:#5C84A8">CrashGuide &nbsp;·&nbsp; <a href="crash-impressum.html" style="color:#5C84A8;text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="crash-datenschutz.pdf" style="color:#5C84A8;text-decoration:none">Datenschutz</a></p>
+  <p style="font-size:12px;color:#5C84A8">Auto-Unfallschaden &nbsp;·&nbsp; <a href="crash-impressum.html" style="color:#5C84A8;text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="crash-datenschutz.pdf" style="color:#5C84A8;text-decoration:none">Datenschutz</a></p>
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -1178,7 +1178,7 @@ function berechne() {
     resultAiBox.style.display = 'none';
   }
 
-  const schaden      = parseFloat(document.getElementById('schadenBetrag').value) || 0;
+  const schaden      = aiSchadenBetrag || parseFloat(document.getElementById('schadenBetrag').value) || 0;
   const fahrzeugWert = parseFloat(document.getElementById('fahrzeugWert').value)  || 0;
   const versicherer  = document.getElementById('versicherer').value;
   const versArt      = document.getElementById('versArt').value;
@@ -1792,7 +1792,7 @@ function exportPDF() {
   doc.setFont('helvetica','bold');
   doc.setFontSize(22);
   setColor([250,249,246]);
-  doc.text('CrashGuide', margin, 16);
+  doc.text('Auto-Unfallschaden', margin, 16);
   doc.setFontSize(9);
   doc.setFont('helvetica','normal');
   setColor([180,195,210]);
@@ -1984,12 +1984,12 @@ function exportPDF() {
     doc.rect(0, 282, W, 15, 'F');
     doc.setFont('helvetica','normal'); doc.setFontSize(7);
     setColor([100,100,100]);
-    doc.text('CrashGuide · uri2503.github.io/auto_guide_crash', margin, 290);
+    doc.text('Auto-Unfallschaden · mein-auto-assistent.de', margin, 290);
     doc.text('Seite ' + p + ' / ' + totalPages, W - margin, 290, {align:'right'});
   }
 
   // ── SAVE ──
-  const filename = 'CrashGuide_' + new Date().toISOString().slice(0,10) + '.pdf';
+  const filename = 'Auto-Unfallschaden_' + new Date().toISOString().slice(0,10) + '.pdf';
   doc.save(filename);
   toast('PDF gespeichert: ' + filename, true);
 }
@@ -2016,7 +2016,7 @@ function exportVolumenPDF() {
   doc.rect(0, 33, W, 3, 'F');
   doc.setFont('helvetica','bold'); doc.setFontSize(22);
   setColor([250,249,246]);
-  doc.text('CrashGuide', margin, 16);
+  doc.text('Auto-Unfallschaden', margin, 16);
   doc.setFontSize(9); doc.setFont('helvetica','normal');
   setColor([180,195,210]);
   doc.text('Schadensschätzung', margin, 24);
@@ -2085,10 +2085,10 @@ function exportVolumenPDF() {
   doc.rect(0, 282, W, 15, 'F');
   doc.setFont('helvetica','normal'); doc.setFontSize(7);
   setColor([100,100,100]);
-  doc.text('CrashGuide · uri2503.github.io/auto_guide_crash', margin, 290);
+  doc.text('Auto-Unfallschaden · mein-auto-assistent.de', margin, 290);
   doc.text('Seite 1 / 1', W - margin, 290, {align:'right'});
 
-  const filename = 'CrashGuide_Schaetzung_' + new Date().toISOString().slice(0,10) + '.pdf';
+  const filename = 'Auto-Unfallschaden_Schaetzung_' + new Date().toISOString().slice(0,10) + '.pdf';
   doc.save(filename);
   toast('PDF gespeichert: ' + filename, true);
 }
@@ -2105,7 +2105,7 @@ function toggleHow() {
   const btn = document.getElementById('howBtn');
   if (!panel) return;
   const open = panel.classList.toggle('show');
-  if (btn) btn.textContent = open ? '– Weniger anzeigen' : '? Wie funktioniert CrashGuide?';
+  if (btn) btn.textContent = open ? '– Weniger anzeigen' : '? Wie funktioniert Auto-Unfallschaden?';
 }
 
 function showAnalysisOverlay() {
@@ -2224,7 +2224,7 @@ function revealKS() {
     document.getElementById('realityText').innerHTML =
       'Laut <strong style="color:var(--white)">' + c.realQuelle + '</strong> lag der tatsächliche Schaden bei ' + fmtEuro(c.realBetrag) + ' — mehr als das ' +
       Math.round(c.realBetrag / c.kostenMax) + '-fache der KI-Schätzung. ' + c.realErklaerung +
-      ' Genau deshalb ersetzt CrashGuide bei erheblichen Schäden keine echte Begutachtung — sondern hilft dir, die richtige Entscheidung zu treffen, ob sich Versicherung oder Werkstatt/Gutachter lohnt.';
+      ' Genau deshalb ersetzt Auto-Unfallschaden bei erheblichen Schäden keine echte Begutachtung — sondern hilft dir, die richtige Entscheidung zu treffen, ob sich Versicherung oder Werkstatt/Gutachter lohnt.';
     realityBox.classList.add('show');
   } else {
     realityBox.classList.remove('show');
@@ -2321,7 +2321,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-4</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-5</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
