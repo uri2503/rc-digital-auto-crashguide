@@ -1188,8 +1188,8 @@ function berechne() {
   const sb           = parseFloat(document.getElementById('selbstbeteiligung').value) || 0;
   const rabattschutz = document.querySelector('input[name="rs"]:checked').value === 'ja';
 
-  if (!schaden)      { toast('Bitte Schadenbetrag eingeben'); return; }
-  if (!beitragInput) { toast('Bitte Versicherungsbeitrag eingeben'); return; }
+  if (!schaden)      { document.getElementById('inputSection').style.display = 'block'; goStep(2); toast('Bitte Schadenbetrag eingeben'); return; }
+  if (!beitragInput) { document.getElementById('inputSection').style.display = 'block'; goStep(3); toast('Bitte Versicherungsbeitrag eingeben — Berechnung sonst nicht möglich'); return; }
 
   // Jahresbeitrag
   const jahresBeitrag = beitragInput * rhythmus;
@@ -1434,6 +1434,15 @@ function fieldVal(id) { const el = document.getElementById(id); return el ? el.v
 async function payWall(product) {
   if (!photoBase64Arr.length && !fieldVal('schadenBetrag')) {
     toast('Bitte Foto(s) hochladen oder Betrag eingeben'); return;
+  }
+  // Verhindert, dass jemand fuer den Bundle (SF-Rueckstufung) bezahlt, ohne die
+  // dafuer noetigen Versicherungsdaten ausgefuellt zu haben -- sonst landet man nach
+  // der Zahlung auf einer Ergebnisseite, die sich nicht mehr vervollstaendigen laesst
+  // (das Eingabeformular ist nach der Zahlung ausgeblendet, berechne() bricht sonst
+  // stillschweigend ab).
+  if (cgIntroState.funnel === 'unfall') {
+    if (!fieldVal('fahrzeugWert')) { toast('Bitte Fahrzeugwert eingeben'); return; }
+    if (!fieldVal('beitrag'))      { toast('Bitte aktuellen Versicherungsbeitrag eingeben'); return; }
   }
   const snapshot = {
     product: product, // 'ks' | 'bundle' | 'upgrade'
@@ -2321,7 +2330,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-5</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-6</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
