@@ -882,6 +882,18 @@ function goStep(n) {
   ['step1','step2','step3'].forEach((s,i) => {
     document.getElementById(s).style.display = i+1 === n ? 'block' : 'none';
   });
+  // Beim Zurueckgehen auf Schritt 1 muss die Pfad-Wahl (6,99€/9,99€) wieder erscheinen --
+  // goStep() alleine kuemmert sich sonst nur um step1/2/3, nicht um pathChoice/volumenCta/
+  // unfallCta, die von choosePath() zuvor ausgeblendet wurden. Ohne das haette der Nutzer
+  // beim Zurueckgehen keine Moeglichkeit mehr, weiterzumachen.
+  if (n === 1) {
+    document.getElementById('pathChoice').style.display = 'block';
+    document.getElementById('volumenCta').style.display = 'none';
+    document.getElementById('unfallCta').style.display = 'none';
+    document.getElementById('progressVolumen').style.display = 'none';
+    document.getElementById('progressUnfall').style.display = 'none';
+    updatePathChoiceState();
+  }
   [1,2,3,4].forEach(i => {
     const el = document.getElementById('p'+i);
     const txt = document.getElementById('p'+i+'t');
@@ -2246,7 +2258,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-1</span></div>
+<div style="text-align:center;padding:16px;font-size:12px;color:#8896A8;">Ein Tool von <a href="https://mein-auto-assistent.de" style="color:#0EA5E9;text-decoration:none;">Mein-Auto-Assistent.de</a><br><span style="opacity:0.4;font-size:10px">build 2026-07-05-2</span></div>
 <div class="analysis-overlay" id="analysisOverlay">
   <div class="analysis-box">
     <div class="analysis-icon">🔍</div>
