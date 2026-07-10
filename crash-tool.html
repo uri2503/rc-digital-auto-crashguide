@@ -496,7 +496,7 @@ section{padding:48px 0}
       <div id="volumenCta" style="display:none;margin-top:16px">
         <div class="card">
           <div class="card-title">Schätzung freischalten</div>
-          <div class="card-hint">Einmalig 6,99 € — KI-Analyse deines Fotos (oder deines manuellen Betrags), keine weiteren Schritte nötig.</div>
+          <div class="card-hint">Einmalig 6,99 € (inkl. MwSt.) — KI-Analyse deines Fotos (oder deines manuellen Betrags), keine weiteren Schritte nötig.</div>
           <div style="background:var(--green-dim);border:1px solid rgba(31,122,77,.25);border-radius:8px;padding:12px 14px;margin-bottom:16px">
             <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:6px">💶 Das kann sich auszahlen</div>
             <div style="font-size:12.5px;color:var(--grey-light);line-height:1.6">Werkstätten verlangen für einen Kostenvoranschlag oft 30–150 € — und ohne Referenzwert verhandelst du blind. Mit einer realistischen Zahl in der Hand vermeidest du, am Ende mehrere hundert Euro zu viel zu zahlen.</div>
@@ -505,7 +505,7 @@ section{padding:48px 0}
             <input type="checkbox" id="cgConsentVolumen" onchange="cgToggleConsent('volumen')" style="margin-top:3px;flex-shrink:0;width:18px;height:18px">
             <label for="cgConsentVolumen" style="font-size:11.5px;color:var(--grey);line-height:1.5;text-align:left">Ich stimme ausdrücklich zu, dass mit der Bereitstellung der digitalen Analyse vor Ablauf der Widerrufsfrist begonnen wird, und bestätige, dass ich dadurch mein Widerrufsrecht verliere (§&nbsp;356 Abs.&nbsp;5 BGB).</label>
           </div>
-          <button class="btn btn-primary btn-full" id="btnPayVolumen" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentVolumen===true && payWall('ks')">Schätzung freischalten · 6,99 €</button>
+          <button class="btn btn-primary btn-full" id="btnPayVolumen" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentVolumen===true && payWall('ks')">Schätzung freischalten · 6,99 € (inkl. MwSt.)</button>
         </div>
       </div>
 
@@ -695,7 +695,7 @@ section{padding:48px 0}
 
       <div style="margin-top:16px;display:flex;justify-content:space-between">
         <button class="btn btn-ghost" onclick="goStep(2)">← Zurück</button>
-        <button class="btn btn-primary" id="btnPayBundle" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentBundle===true && payWall('bundle')">Ergebnis freischalten · 9,99 €</button>
+        <button class="btn btn-primary" id="btnPayBundle" style="opacity:.45;pointer-events:none" onclick="return window.cgConsentBundle===true && payWall('bundle')">Ergebnis freischalten · 9,99 € (inkl. MwSt.)</button>
       </div>
     </div>
 
@@ -791,7 +791,7 @@ section{padding:48px 0}
 </div>
 
 <footer style="background:#0F2840;padding:24px 20px;text-align:center;margin-top:8px">
-  <p style="font-size:12px;color:#5C84A8">Auto-Unfallcheck &nbsp;·&nbsp; <a href="crash-impressum.html" style="color:#5C84A8;text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="crash-datenschutz.html" style="color:#5C84A8;text-decoration:none">Datenschutz</a></p>
+  <p style="font-size:12px;color:#5C84A8">Auto-Unfallcheck &nbsp;·&nbsp; <a href="crash-impressum.html" style="color:#5C84A8;text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="crash-datenschutz.html" style="color:#5C84A8;text-decoration:none">Datenschutz</a> &nbsp;·&nbsp; <a href="crash-agb.html" style="color:#5C84A8;text-decoration:none">AGB</a></p>
 </footer>
 
 <div class="toast" id="toast"></div>
